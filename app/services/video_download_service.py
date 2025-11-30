@@ -8,7 +8,7 @@ from typing import Optional
 from slugify import slugify
 
 from pytubefix import YouTube
-from pytubefix.exceptions import PytubeError # Import specific pytube exception
+import pytubefix.exceptions as pytubefix_exceptions # Changed import
 
 from app.core.config import settings
 from app.core.utils import extract_youtube_id, extract_facebook_video_id
@@ -82,7 +82,7 @@ class VideoDownloadService:
                 yt = YouTube(url, use_oauth=False, allow_oauth_cache=True) # Add oauth params
                 audio_stream = yt.streams.filter(only_audio=True).first()
                 if not audio_stream:
-                    raise Exception("No audio stream found")
+                    raise pytubefix_exceptions.PytubeError("No audio stream found") # Use full path
 
                 # Download directly to the final location
                 # pytubefix's download method returns the full path of the downloaded file
@@ -99,7 +99,7 @@ class VideoDownloadService:
                 return final_audio_path
             return None
 
-        except PytubeError as e: # Catch specific pytube errors
+        except pytubefix_exceptions.PytubeError as e: # Catch specific pytube errors
             logger.error(f"❌ YouTube audio download (PytubeError) error: {e}")
             return None
         except Exception as e:
