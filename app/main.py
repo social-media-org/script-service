@@ -6,13 +6,11 @@ from typing import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
 
 from app.core.config import settings
-from app.core import database
 from app.core.exceptions import setup_exception_handlers
 from app.core.logging import get_logger, setup_logging
-from app.routes import audio
+from app.routes import scripts
 
 # Setup logging
 setup_logging()
@@ -22,15 +20,14 @@ logger = get_logger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
-    await database.connect_to_mongo()
-    print("✅ Connected to MongoDB Atlas")
+    logger.info("Starting Script Generation Service")
+    print("✅ Script Generation Service started")
 
     yield
 
     # Shutdown
     logger.info("Shutting down application")
-    await database.close_mongo_connection()
-    print("❌ Disconnected from MongoDB Atlas")
+    print("❌ Script Generation Service stopped")
 
 
 def create_app() -> FastAPI:
@@ -44,6 +41,15 @@ def create_app() -> FastAPI:
         version=settings.app_version,
         debug=settings.debug,
         lifespan=lifespan,
+        description="""
+        🎬 Script Generation Microservice
+        
+        Generate professional video scripts with AI-powered agents:
+        - Transcribe inspiration videos (YouTube/Facebook)
+        - Generate structured script sections
+        - Create SEO-optimized titles and descriptions
+        - Extract relevant keywords
+        """
     )
 
     # CORS middleware
@@ -68,12 +74,13 @@ def create_app() -> FastAPI:
         """
         return {
             "status": "healthy",
+            "service": "script-generation",
             "version": settings.app_version,
             "environment": settings.environment,
         }
 
     # Include routers
-    app.include_router(audio.router, prefix=settings.api_v1_prefix)
+    app.include_router(scripts.router, prefix=settings.api_v1_prefix)
 
     return app
 
