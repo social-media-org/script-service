@@ -65,7 +65,19 @@ class BaseAgent(ABC):
         Returns:
             Formatted prompt string
         """
-        return Template(prompt_template_str).safe_substitute(**kwargs)
+        logger.debug(f"Formatting prompt. Template string length: {len(prompt_template_str)}")
+        # Convert None values in kwargs to empty strings to ensure substitution
+        cleaned_kwargs = {k: (v if v is not None else "") for k, v in kwargs.items()}
+        logger.info(f"Formatting prompt. Cleaned Kwargs: {cleaned_kwargs}")
+        substituted_prompt = Template(prompt_template_str).safe_substitute(**cleaned_kwargs)
+        logger.info(f"Formatting prompt. Substituted length: {len(substituted_prompt)}")
+        # Optionally, check for any remaining placeholders if debug is enabled, to catch missing keys
+        if logger.isEnabledFor(logging.DEBUG):
+            import re
+            remaining_placeholders = re.findall(r'\{(\w+)\}', substituted_prompt)
+            if remaining_placeholders:
+                logger.debug(f"WARNING: Remaining placeholders after substitution: {remaining_placeholders}")
+        return substituted_prompt
 
     async def generate(self, formatted_prompt: str, language: str = "en") -> str:
         """Generate output using LLM.

@@ -55,7 +55,7 @@ class TranslationAgent:
 
         try:
             messages = [
-                {"role": "system", "content": "You are a highly accurate translation engine. Your task is to translate the provided text from English into the specified target language. You MUST only output the translated text, without any additional commentary, explanations, or extraneous information. Preserve the original formatting, structure, and intent precisely."},
+                {"role": "system", "content": "You are a highly accurate and concise translation engine. Your ONLY task is to translate the provided English text into the specified target language. You MUST extract and output ONLY the translated text that was enclosed within '--- TEXT TO TRANSLATE ---' and '--- END TEXT ---' delimiters. DO NOT include the delimiters themselves, any conversational remarks, introductions, conclusions, or any other extraneous information. Provide ONLY the translated content."},
                 {"role": "user", "content": f"Please translate the following English text into {language_name}:\n\n--- TEXT TO TRANSLATE ---\n{prompt}\n--- END TEXT ---"}
             ]
 
