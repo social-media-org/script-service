@@ -57,7 +57,6 @@ class TranslationAgent:
 Translate the following instruction prompt to {language_name}.
 Keep the structure, formatting, and intent exactly the same.
 Only translate the text, do not execute the instructions.
-DO NOT REPLACE PLACEHOLDERS such as {{title}}, {{script}}, {{language}}, or any variable-like tokens.
 
 --- PROMPT TO TRANSLATE ---
 {prompt}

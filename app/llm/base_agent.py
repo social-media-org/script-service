@@ -67,12 +67,12 @@ class BaseAgent(ABC):
         """
         return Template(prompt_template_str).safe_substitute(**kwargs)
 
-    async def generate(self, language: str = "en", **kwargs) -> str:
+    async def generate(self, formatted_prompt: str, language: str = "en") -> str:
         """Generate output using LLM.
 
         Args:
+            formatted_prompt: The fully formatted prompt string with all placeholders replaced.
             language: Target language for response
-            **kwargs: Variables for prompt formatting
 
         Returns:
             Generated text
@@ -82,26 +82,22 @@ class BaseAgent(ABC):
         """
         if not self.llm_client.is_available():
             raise ValueError(f"{self.__class__.__name__} requires LLM client. Check API key configuration.")
-
-        # Format prompt (assuming child class handles template selection if multiple exist)
-        if self.prompt_template is None:
-            raise ValueError("BaseAgent requires a prompt_template or override generate method.")
         
-        prompt = self._format_prompt(self.prompt_template, **kwargs)
-        logger.info(f"Prompt brute : {prompt}")
+        logger.info(f"Prompt brute : {formatted_prompt}")
         
         # Translate prompt if needed and not English
         if self.translate_prompt and language != "en":
             from app.agents.translation_agent import get_translation_agent
             translation_agent = get_translation_agent()
-            prompt = await translation_agent.translate_prompt(prompt, language)
-            logger.info("Prompt traduit en {language} : {prompt} ")
+            translated_prompt = await translation_agent.translate_prompt(formatted_prompt, language)
+            logger.info(f"Prompt traduit en {language} : {translated_prompt} ")
+            formatted_prompt = translated_prompt
 
 
         # Prepare messages
         messages = [
             {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": formatted_prompt}
         ]
 
         # Generate response

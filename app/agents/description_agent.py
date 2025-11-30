@@ -55,10 +55,15 @@ class DescriptionAgent(BaseAgent):
         else:
             script_preview = script_text
 
-        description = await self.generate(
-            language=language,
+        formatted_prompt = self._format_prompt(
+            self.prompt_template,
             script_text=script_preview,
             keywords=keywords or "video content"
+        )
+
+        description = await super().generate(
+            formatted_prompt=formatted_prompt,
+            language=language
         )
 
         logger.info(f"Generated description: {len(description)} chars")

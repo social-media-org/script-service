@@ -55,11 +55,16 @@ class KeywordsAgent(BaseAgent):
         script_preview = script_text[:1000] + "..." if len(script_text) > 1000 else script_text
         desc_preview = description[:500] + "..." if len(description) > 500 else description
 
-        keywords = await self.generate(
-            language=language,
+        formatted_prompt = self._format_prompt(
+            self.prompt_template,
             script_text=script_preview,
             description=desc_preview,
             use_case=use_case
+        )
+
+        keywords = await super().generate(
+            formatted_prompt=formatted_prompt,
+            language=language
         )
 
         # Clean up keywords

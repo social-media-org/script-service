@@ -88,7 +88,7 @@ class SectionsAgent(BaseAgent):
         else:
             prompt_template = self.prompt_template_multiple
         
-        prompt_content = self._format_prompt(
+        formatted_prompt = self._format_prompt(
             prompt_template,
             description=description,
             use_case=use_case,
@@ -97,26 +97,11 @@ class SectionsAgent(BaseAgent):
             nb_section=nb_section,
             inspiration_content=inspiration_content,
         )
-        logger.info(f"Prompt brute : {prompt_content}")
 
-        # Translate prompt if needed and not English (BaseAgent handles translation based on translate_prompt flag, but we do it manually here for specific prompt selection)
-        if language != "en":
-            translation_agent = get_translation_agent()
-            prompt_content = await translation_agent.translate_prompt(prompt_content, language)
-            logger.info(f"Prompt traduit en {language} : {prompt_content} ")
-
-        # Prepare messages
-        messages = [
-            {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
-            {"role": "user", "content": prompt_content}
-        ]
-
-        # Generate response using llm_client directly since generate method is overridden
         try:
-            script_output = await self.llm_client.chat_completion(
-                messages=messages,
-                temperature=self.temperature,
-                max_tokens=self._get_max_tokens()
+            script_output = await super().generate(
+                formatted_prompt=formatted_prompt,
+                language=language
             )
         except Exception as e:
             logger.error(f"Sections generation failed: {e}")

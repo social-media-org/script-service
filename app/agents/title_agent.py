@@ -51,11 +51,16 @@ class TitleAgent(BaseAgent):
         """
         logger.info(f"Generating title for use_case={use_case}, language={language}")
         
-        title = await self.generate(
-            language=language,
+        formatted_prompt = self._format_prompt(
+            self.prompt_template,
             description=description,
             use_case=use_case,
             style=style
+        )
+
+        title = await super().generate(
+            formatted_prompt=formatted_prompt,
+            language=language
         )
 
         # Clean up the title (remove quotes if present)
