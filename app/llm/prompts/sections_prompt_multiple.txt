@@ -7,7 +7,7 @@ Context:
 - Target Duration: {duration} seconds
 - Number of Sections: {nb_section}
 
-Inspiration Content (from transcribed videos):
+
 {inspiration_content}
 
 Requirements:

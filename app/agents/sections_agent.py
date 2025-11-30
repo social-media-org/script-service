@@ -6,6 +6,8 @@ from pathlib import Path
 
 from app.core.llm_client import get_llm_client
 from app.core.config import settings
+from string import Template
+
 
 logger = logging.getLogger(__name__)
 
@@ -65,29 +67,26 @@ class SectionsAgent:
         )
 
         # Prepare inspiration content message
-        if not inspiration_content:
-            inspiration_content = "No inspiration content provided."
+        if  inspiration_content:
+            inspiration_content = "Inspiration Content : " + inspiration_content
+        
 
         # Select appropriate prompt template and build prompt
         if nb_section == 1:
             prompt_template = self.prompt_template_single
-            prompt = prompt_template.format(
-                description=description,
-                use_case=use_case,
-                style=style,
-                duration=duration,
-                inspiration_content=inspiration_content
-            )
+            
         else:
             prompt_template = self.prompt_template_multiple
-            prompt = prompt_template.format(
-                description=description,
-                use_case=use_case,
-                style=style,
-                duration=duration,
-                nb_section=nb_section,
-                inspiration_content=inspiration_content
-            )
+        
+        prompt = Template(prompt_template).safe_substitute(
+            description=description,
+            use_case=use_case,
+            style=style,
+            duration=duration,
+            nb_section=nb_section,
+            inspiration_content=inspiration_content,
+        )
+        
 
         # Translate prompt if needed
         if language != "en":
@@ -105,7 +104,7 @@ class SectionsAgent:
             script_output = await self.llm_client.chat_completion(
                 messages=messages,
                 temperature=self.temperature,
-                max_tokens=2000
+                max_tokens=8000
             )
         except Exception as e:
             logger.error(f"Sections generation failed: {e}")
