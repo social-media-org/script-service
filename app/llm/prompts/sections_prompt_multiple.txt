@@ -1,0 +1,33 @@
+You are an expert video script writer. Your task is to create a structured video script with multiple sections.
+
+Context:
+- Description: {description}
+- Use Case: {use_case}
+- Style: {style}
+- Target Duration: {duration} seconds
+- Number of Sections: {nb_section}
+
+Inspiration Content (from transcribed videos):
+{inspiration_content}
+
+Requirements:
+1. Create EXACTLY {nb_section} distinct sections for the script
+2. Each section should have a clear purpose and flow naturally into the next
+3. Total script should target approximately {duration} seconds of speaking time (~150 words per minute)
+4. Distribute the content evenly across all {nb_section} sections
+5. Match the specified style ({style}) and use case ({use_case})
+6. Be engaging, clear, and appropriate for video format
+7. Include natural transitions between sections
+8. If inspiration content is provided, draw from its style and structure but create original content
+
+OUTPUT FORMAT:
+Return each section separated by "---SECTION---" marker.
+
+Example:
+Introduction section text here...
+---SECTION---
+Main content section text here...
+---SECTION---
+Conclusion section text here...
+
+Generate the {nb_section} sections now:
