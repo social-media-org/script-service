@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     )
 
     # Application
-    app_name: str = "FastAPI Clean Architecture"
+    app_name: str = "Script Generation Service"
     app_version: str = "1.0.0"
     debug: bool = False
     environment: str = "development"
@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     allowed_hosts: list[str] = ["*"]
     app_port: int = 8000
 
-    # MongoDB
+    # MongoDB (keep for compatibility, but won't be used)
     mongodb_url: str = "mongodb://localhost:27017"
     DB_NAME: str = "fastapi_db"
     mongodb_min_pool_size: int = 10
@@ -36,6 +36,18 @@ class Settings(BaseSettings):
     # Logging
     log_level: str = "INFO"
     log_format: str = "text"  # json or text
+
+    # LLM API Keys
+    deepseek_api_key: str = ""
+    openai_api_base: str = "https://api.deepseek.com/v1"  # DeepSeek endpoint
+    openai_model: str = "deepseek-chat"  # Default model
+
+    # Transcription
+    assemblyai_api_key: str = ""
+
+    # Script generation defaults
+    default_duration: int = 30  # seconds
+    default_nb_sections: int = 1
 
 
 @lru_cache
