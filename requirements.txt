@@ -17,7 +17,7 @@ mypy==1.13.0
 openai==1.54.5
 
 # Video transcription
-assemblyai==0.37.1
+assemblyai==0.46.0
 pytubefix==8.10.3
 
 # HTTP requests
