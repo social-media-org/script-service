@@ -20,7 +20,7 @@ class TitleAgent(BaseAgent):
         super().__init__(
             prompt_file="title_prompt.txt",
             temperature=temperature,
-            translate_prompt=True
+            translate_prompt=False
         )
 
     def _get_max_tokens(self) -> Optional[int]:

@@ -24,6 +24,7 @@ class SectionsAgent:
         self.llm_client = get_llm_client()
         self.temperature = temperature
         
+        
         # Load both prompt templates
         prompts_dir = Path(__file__).parent.parent / "llm" / "prompts"
         with open(prompts_dir / "sections_prompt_single.txt", 'r', encoding='utf-8') as f:

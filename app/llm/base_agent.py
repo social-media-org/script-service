@@ -81,12 +81,15 @@ class BaseAgent(ABC):
 
         # Format prompt
         prompt = self._format_prompt(**kwargs)
+        logger.info(f"Prompt brute : {prompt}")
         
         # Translate prompt if needed and not English
         if self.translate_prompt and language != "en":
             from app.agents.translation_agent import get_translation_agent
             translation_agent = get_translation_agent()
             prompt = await translation_agent.translate_prompt(prompt, language)
+            logger.info("Prompt traduit en {language} : {prompt} ")
+
 
         # Prepare messages
         messages = [
