@@ -18,7 +18,7 @@ openai==1.54.5
 
 # Video transcription
 assemblyai==0.46.0
-pytubefix==8.10.3
+pytubefix==10.3.5
 
 # HTTP requests
 httpx==0.28.1
