@@ -2,14 +2,15 @@
 
 import logging
 from typing import Optional
+from pathlib import Path
 
-from app.llm.base_agent import BaseAgent
+from app.core.llm_client import get_llm_client
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
 
-class SectionsAgent(BaseAgent):
+class SectionsAgent:
     """Agent specialized in generating structured script sections."""
 
     def __init__(self, temperature: float = 0.7):
@@ -18,15 +19,17 @@ class SectionsAgent(BaseAgent):
         Args:
             temperature: Balanced temperature for creative but coherent scripts
         """
-        super().__init__(prompt_file="sections_prompt.txt", temperature=temperature)
-
-    def _get_max_tokens(self) -> Optional[int]:
-        """Get maximum tokens for script generation.
-
-        Returns:
-            Max tokens (scripts can be long)
-        """
-        return 2000
+        self.llm_client = get_llm_client()
+        self.temperature = temperature
+        
+        # Load both prompt templates
+        prompts_dir = Path(__file__).parent.parent / "llm" / "prompts"
+        with open(prompts_dir / "sections_prompt_single.txt", 'r', encoding='utf-8') as f:
+            self.prompt_template_single = f.read()
+        with open(prompts_dir / "sections_prompt_multiple.txt", 'r', encoding='utf-8') as f:
+            self.prompt_template_multiple = f.read()
+        
+        logger.info("SectionsAgent initialized with dynamic prompt selection")
 
     async def generate_sections(
         self,
@@ -65,16 +68,48 @@ class SectionsAgent(BaseAgent):
         if not inspiration_content:
             inspiration_content = "No inspiration content provided."
 
+        # Select appropriate prompt template and build prompt
+        if nb_section == 1:
+            prompt_template = self.prompt_template_single
+            prompt = prompt_template.format(
+                description=description,
+                use_case=use_case,
+                style=style,
+                duration=duration,
+                inspiration_content=inspiration_content
+            )
+        else:
+            prompt_template = self.prompt_template_multiple
+            prompt = prompt_template.format(
+                description=description,
+                use_case=use_case,
+                style=style,
+                duration=duration,
+                nb_section=nb_section,
+                inspiration_content=inspiration_content
+            )
+
+        # Translate prompt if needed
+        if language != "en":
+            from app.agents.translation_agent import get_translation_agent
+            translation_agent = get_translation_agent()
+            prompt = await translation_agent.translate_prompt(prompt, language)
+
         # Generate script
-        script_output = await self.generate(
-            description=description,
-            use_case=use_case,
-            style=style,
-            language=language,
-            duration=duration,
-            nb_section=nb_section,
-            inspiration_content=inspiration_content
-        )
+        messages = [
+            {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
+            {"role": "user", "content": prompt}
+        ]
+
+        try:
+            script_output = await self.llm_client.chat_completion(
+                messages=messages,
+                temperature=self.temperature,
+                max_tokens=2000
+            )
+        except Exception as e:
+            logger.error(f"Sections generation failed: {e}")
+            raise
 
         # Parse sections
         if nb_section == 1:
