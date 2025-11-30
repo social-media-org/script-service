@@ -4,10 +4,10 @@ import logging
 from typing import Optional
 
 from app.models.script import ScriptGenerationRequest, ScriptGenerationResponse
-from app.services.title_agent import TitleAgent
-from app.services.sections_agent import SectionsAgent
-from app.services.description_agent import DescriptionAgent
-from app.services.keywords_agent import KeywordsAgent
+from app.agents.title_agent import TitleAgent
+from app.agents.sections_agent import SectionsAgent
+from app.agents.description_agent import DescriptionAgent
+from app.agents.keywords_agent import KeywordsAgent
 from app.services.transcription_service import get_transcription_service
 
 logger = logging.getLogger(__name__)
