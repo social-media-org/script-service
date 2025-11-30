@@ -1,0 +1,122 @@
+{
+  "examples": [
+    {
+      "name": "Short video (30s)",
+      "description": "Quick tip for YouTube Shorts",
+      "request": {
+        "title": "Quick Python Tip",
+        "description": "Learn Python list comprehension in 30 seconds",
+        "use_case": "youtube_short",
+        "language": "en",
+        "style": "casual"
+      }
+    },
+    {
+      "name": "Educational tutorial (90s, 3 sections)",
+      "description": "Structured tutorial with multiple sections",
+      "request": {
+        "title": "Python Functions Explained",
+        "description": "Learn how to create and use functions in Python",
+        "use_case": "tutorial",
+        "language": "en",
+        "style": "educational",
+        "duration": 90,
+        "nb_section": 3
+      }
+    },
+    {
+      "name": "Commercial/Ad (45s)",
+      "description": "Product promotion",
+      "request": {
+        "title": "Amazing Product Launch",
+        "description": "Promote our new SaaS product for developers",
+        "use_case": "commercial",
+        "language": "en",
+        "style": "professional",
+        "duration": 45,
+        "nb_section": 2
+      }
+    },
+    {
+      "name": "Inspirational (60s)",
+      "description": "Motivational content",
+      "request": {
+        "title": "Never Give Up",
+        "description": "Inspire people to pursue their dreams despite obstacles",
+        "use_case": "inspirational",
+        "language": "en",
+        "style": "inspirational",
+        "duration": 60,
+        "nb_section": 1
+      }
+    },
+    {
+      "name": "French educational (2 min, 4 sections)",
+      "description": "French language tutorial",
+      "request": {
+        "title": "Introduction à Python",
+        "description": "Apprendre les bases de la programmation Python pour débutants",
+        "use_case": "educational",
+        "language": "fr",
+        "style": "professional",
+        "duration": 120,
+        "nb_section": 4
+      }
+    },
+    {
+      "name": "With YouTube inspiration",
+      "description": "Generate script based on inspiration video",
+      "request": {
+        "title": "Machine Learning Basics",
+        "description": "Introduction to machine learning concepts and algorithms",
+        "use_case": "explanation",
+        "language": "en",
+        "style": "educational",
+        "duration": 90,
+        "nb_section": 3,
+        "video_inspirations": [
+          "https://www.youtube.com/watch?v=example-video-id"
+        ]
+      }
+    },
+    {
+      "name": "Regenerate metadata only",
+      "description": "Update title, description, keywords without regenerating script",
+      "request": {
+        "title": "My Existing Video",
+        "description": "Original video about web development",
+        "use_case": "tutorial",
+        "language": "en",
+        "style": "professional",
+        "script_text": "Welcome to this web development tutorial. Today we will learn about React hooks. First, let's understand what hooks are...",
+        "regenerer_script": false
+      }
+    },
+    {
+      "name": "Comedic short",
+      "description": "Funny content for social media",
+      "request": {
+        "title": "Programming Memes",
+        "description": "Relatable programming jokes and situations",
+        "use_case": "youtube_short",
+        "language": "en",
+        "style": "comedic",
+        "duration": 30,
+        "nb_section": 1
+      }
+    },
+    {
+      "name": "Storytelling (2 min)",
+      "description": "Narrative content",
+      "request": {
+        "title": "The Journey of a Developer",
+        "description": "Tell the story of a developer's career journey from beginner to senior",
+        "use_case": "storytelling",
+        "language": "en",
+        "style": "dramatic",
+        "duration": 120,
+        "nb_section": 5
+      }
+    }
+  ]
+}
