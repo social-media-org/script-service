@@ -22,7 +22,7 @@ class SectionsAgent(BaseAgent):
         Args:
             temperature: Balanced temperature for creative but coherent scripts
         """
-        super().__init__(prompt_file=None, temperature=temperature, translate_prompt=False)
+        super().__init__(prompt_file=None, temperature=temperature, translate_prompt=True) # Changed to True
         
         # Load both prompt templates
         self.prompt_template_single = self._load_sections_prompt("sections_prompt_single.txt")

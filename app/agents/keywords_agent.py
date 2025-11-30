@@ -20,7 +20,7 @@ class KeywordsAgent(BaseAgent):
         super().__init__(
             prompt_file="keywords_prompt.txt",
             temperature=temperature,
-            translate_prompt=False  # Keywords don't need translation
+            translate_prompt=True  # Keywords prompt should be translated for better context
         )
 
     def _get_max_tokens(self) -> Optional[int]:

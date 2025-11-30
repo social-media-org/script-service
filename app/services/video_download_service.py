@@ -8,6 +8,7 @@ from typing import Optional
 from slugify import slugify
 
 from pytubefix import YouTube
+from pytubefix.exceptions import PytubeError # Import specific pytube exception
 
 from app.core.config import settings
 from app.core.utils import extract_youtube_id, extract_facebook_video_id
@@ -78,31 +79,31 @@ class VideoDownloadService:
         try:
             # Download with pytube
             def download():
-                yt = YouTube(url)
+                yt = YouTube(url, use_oauth=False, allow_oauth_cache=True) # Add oauth params
                 audio_stream = yt.streams.filter(only_audio=True).first()
                 if not audio_stream:
                     raise Exception("No audio stream found")
-                
-                # Download to temp first
-                temp_dir = tempfile.mkdtemp()
-                temp_path = audio_stream.download(
-                    output_path=temp_dir,
-                    filename="temp_audio.mp3"
+
+                # Download directly to the final location
+                # pytubefix's download method returns the full path of the downloaded file
+                downloaded_file_path = audio_stream.download(
+                    output_path=audio_path.parent,
+                    filename=audio_path.name
                 )
-                
-                # Move to final location
-                import shutil
-                shutil.move(temp_path, str(audio_path))
+                return Path(downloaded_file_path)
 
-            await asyncio.to_thread(download)
+            final_audio_path = await asyncio.to_thread(download)
 
-            if audio_path.exists():
-                logger.info(f"✅ Downloaded YouTube audio: {audio_path}")
-                return audio_path
+            if final_audio_path and final_audio_path.exists():
+                logger.info(f"✅ Downloaded YouTube audio: {final_audio_path}")
+                return final_audio_path
             return None
 
+        except PytubeError as e: # Catch specific pytube errors
+            logger.error(f"❌ YouTube audio download (PytubeError) error: {e}")
+            return None
         except Exception as e:
-            logger.error(f"❌ YouTube audio download error: {e}")
+            logger.error(f"❌ YouTube audio download (General Error) error: {e}")
             return None
 
     async def download_facebook_video(
