@@ -1,101 +1,133 @@
-# 🚀 FastAPI Clean Architecture Template
+# 🎬 Script Generation Microservice
 
-Template de projet FastAPI prêt à l'emploi suivant les principes de **Clean Architecture** et **SOLID**.
+Microservice FastAPI intelligent pour la génération automatique de scripts vidéo structurés avec des agents LLM spécialisés.
 
-## ✨ Caractéristiques
+## ✨ Fonctionnalités
 
-- ✅ **Clean Architecture** avec séparation claire des responsabilités
-- ✅ **Principes SOLID** appliqués rigoureusement
-- ✅ **Type Hints** complets avec validation mypy (modérée)
-- ✅ **MongoDB Atlas** intégration async avec Motor
-- ✅ **Dependency Injection** via FastAPI Depends
-- ✅ **Logging structuré** JSON format
-- ✅ **Gestion d'erreurs** centralisée et personnalisée
-- ✅ **Docker multi-stage** optimisé pour production
-- ✅ **Hot reload** pour développement
-- ✅ **Port paramétrable** via variable d'environnement
-- ✅ **API versioning** (v1)
-- ✅ **Health check** endpoint
+- ✅ **Génération de scripts vidéo** avec agents LLM spécialisés
+- ✅ **Transcription vidéo** (YouTube/Facebook) via AssemblyAI
+- ✅ **Agents multiples** : Titre, Sections, Description, Keywords
+- ✅ **Régénération partielle** (métadonnées uniquement)
+- ✅ **Support multi-langues** (en, fr, es, de, it, pt)
+- ✅ **Styles variés** (educational, inspirational, comedic, etc.)
+- ✅ **API DeepSeek** (compatible OpenAI)
+- ✅ **Architecture propre** avec séparation des responsabilités
 
 ## 🏗️ Architecture
 
 ```
 app/
-├── api/                    # API Layer - Points d'entrée HTTP
-│   ├── dependencies/       # Injection de dépendances
-│   └── v1/
-│       └── routes/         # Endpoints API
-├── core/                   # Core Layer - Configuration et utilitaires
-│   ├── config.py           # ConfigService (Settings)
-│   ├── database.py         # Database service (Motor)
-│   ├── logging.py          # Configuration logging
-│   └── exceptions.py       # Exceptions personnalisées
-├── services/               # Service Layer - Logique métier
-│   └── example_service.py
-├── repositories/           # Repository Layer - Accès données
-│   └── example_repository.py
-├── models/                 # Pydantic Models - Validation
-│   └── example_model.py
-└── main.py                 # Application FastAPI
+├── main.py                    # Point d'entrée FastAPI
+├── core/
+│   ├── config.py              # Configuration (Settings)
+│   ├── llm_client.py          # Client LLM (DeepSeek/OpenAI)
+│   ├── utils.py               # Utilitaires
+│   ├── logging.py             # Configuration logging
+│   ├── database.py            # Database (non utilisé)
+│   └── exceptions.py          # Exceptions personnalisées
+├── routes/
+│   └── scripts.py             # Endpoints /scripts
+├── models/
+│   └── script.py              # Modèles Pydantic
+├── services/
+│   ├── title_agent.py         # Agent génération titre
+│   ├── sections_agent.py      # Agent génération sections
+│   ├── description_agent.py   # Agent génération description
+│   ├── keywords_agent.py      # Agent génération keywords
+│   ├── transcription_service.py  # Service transcription
+│   └── script_orchestrator.py # Orchestrateur principal
+└── llm/
+    ├── base_agent.py          # Classe de base pour agents
+    └── prompts/
+        ├── title_prompt.txt
+        ├── sections_prompt.txt
+        ├── description_prompt.txt
+        └── keywords_prompt.txt
 ```
 
 ### Flux de données
 
 ```
-Request → Route → Service → Repository → MongoDB
-             ↓       ↓         ↓
-          Pydantic Business  Data Access
-          Models   Logic     Layer
+Requête → Route /scripts/{project_id}
+         ↓
+    Orchestrator
+         ↓
+    ┌─────────────────────────┐
+    │ 1. Transcription Service  │ → YouTube/Facebook
+    │ 2. Sections Agent         │ → Script structuré
+    │ 3. Title Agent            │ → Titre optimisé
+    │ 4. Keywords Agent         │ → Mots-clés SEO
+    │ 5. Description Agent      │ → Description vidéo
+    └─────────────────────────┘
+         ↓
+    Response JSON
 ```
 
 ## 🛠️ Technologies
 
-- **Python 3.13** (dernière version stable)
+- **Python 3.11+**
 - **FastAPI** - Framework web moderne
 - **Uvicorn** - Serveur ASGI
-- **Motor** - MongoDB async driver
 - **Pydantic v2** - Validation de données
-- **mypy** - Type checking
-- **Docker** - Containerisation
+- **OpenAI SDK** - Client LLM (compatible DeepSeek)
+- **AssemblyAI** - Transcription audio
+- **PyTubeFix** - Téléchargement YouTube
 
-## 📦 Installation
+## 📚 Modèles de données
 
-### Prérequis
+### ScriptGenerationRequest
 
-- Python 3.13+
+```python
+{
+  "title": str,                    # Titre du projet
+  "description": str,              # Description/prompt
+  "video_inspirations": [str],     # URLs vidéos (optionnel)
+  "use_case": str,                 # storytelling | youtube_short | ...
+  "language": str,                 # en | fr | es | de | it | pt
+  "style": str,                    # educational | inspirational | ...
+  "keywords": str,                 # Mots-clés (optionnel)
+  "script_text": str,              # Script existant (optionnel)
+  "regenerer_script": bool,        # Régénérer le script (default: true)
+  "duration": int,                 # Durée en secondes (default: 30)
+  "nb_section": int                # Nombre de sections (default: 1)
+}
+```
+
+### ScriptGenerationResponse
+
+```python
+{
+  "script_sections": [str],        # Sections (si nb_section > 1)
+  "script_text": str,              # Script complet concaténé
+  "status": str,                   # "script_generated"
+  "keywords": str,                 # Mots-clés générés
+  "video_description": str,        # Description vidéo
+  "title": str                     # Titre généré
+}
+```
+
+## 🚀 Installation
+
+### 1. Prérequis
+
+- Python 3.11+
 - pip
-- (Optionnel) Docker & Docker Compose
+- Clé API DeepSeek
+- Clé API AssemblyAI
 
-### Installation locale
+### 2. Installation des dépendances
 
 ```bash
-# Cloner le repository
-git clone <your-repo-url>
-cd <project-name>
-
-# Installer les dépendances
-make install
-# OU
 pip install -r requirements.txt
 ```
 
-## ⚙️ Configuration
-
-### 1. Configuration MongoDB Atlas
-
-1. Créez un compte sur [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-2. Créez un cluster gratuit
-3. Créez un utilisateur database avec permissions lecture/écriture
-4. Whitelist votre IP (ou 0.0.0.0/0 pour développement)
-5. Récupérez votre connection string
-
-### 2. Fichier .env
+### 3. Configuration
 
 ```bash
 # Copier le template
 cp .env.example .env
 
-# Éditer .env avec vos valeurs
+# Éditer .env avec vos clés API
 nano .env
 ```
 
@@ -103,50 +135,33 @@ nano .env
 
 ```env
 # Application
-APP_NAME="FastAPI Clean Architecture"
-APP_VERSION="1.0.0"
-DEBUG=false
-ENVIRONMENT=development
-
-# API
-API_V1_PREFIX=/api/v1
-ALLOWED_HOSTS=["*"]
+APP_NAME="Script Generation Service"
 APP_PORT=8000
 
-# MongoDB Atlas
-MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/
-DB_NAME=fastapi_db
-MONGODB_MIN_POOL_SIZE=10
-MONGODB_MAX_POOL_SIZE=100
+# LLM API Keys
+DEEPSEEK_API_KEY=sk-your-deepseek-key-here
+OPENAI_API_BASE=https://api.deepseek.com/v1
+OPENAI_MODEL=deepseek-chat
 
-# Logging
-LOG_LEVEL=INFO
-LOG_FORMAT=json
+# Transcription
+ASSEMBLYAI_API_KEY=your-assemblyai-key-here
+
+# Defaults
+DEFAULT_DURATION=30
+DEFAULT_NB_SECTIONS=1
 ```
 
-## 🚀 Utilisation
-
-### Démarrage local
+### 4. Lancement
 
 ```bash
-# Avec Makefile (utilise APP_PORT du .env)
-make run
-
-# OU directement avec uvicorn
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-L'API sera disponible sur: **http://localhost:8000** (ou le port configuré dans .env)
-
-### Documentation interactive
-
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **Health Check**: http://localhost:8000/health
+L'API sera disponible sur: **http://localhost:8000**
 
 ## 🔌 API Endpoints
 
-### Health Check
+### 1. Health Check
 
 ```http
 GET /health
@@ -156,223 +171,280 @@ GET /health
 ```json
 {
   "status": "healthy",
+  "service": "script-generation",
   "version": "1.0.0",
   "environment": "development"
 }
 ```
 
-### Examples CRUD
+### 2. Script Service Health
 
-**Créer un exemple**
 ```http
-POST /api/v1/examples
-Content-Type: application/json
+GET /api/v1/scripts/health
+```
 
+**Response:**
+```json
 {
-  "name": "Mon exemple",
-  "description": "Description optionnelle",
-  "is_active": true
+  "status": "healthy",
+  "services": {
+    "llm": "available",
+    "transcription": "available"
+  },
+  "config": {
+    "default_duration": 30,
+    "default_nb_sections": 1,
+    "llm_model": "deepseek-chat"
+  }
 }
 ```
 
-**Lister les exemples**
-```http
-GET /api/v1/examples?skip=0&limit=10
-```
+### 3. Générer un script complet
 
-**Obtenir un exemple**
 ```http
-GET /api/v1/examples/{id}
-```
-
-**Mettre à jour un exemple**
-```http
-PUT /api/v1/examples/{id}
+POST /api/v1/scripts/{project_id}
 Content-Type: application/json
 
 {
-  "name": "Nom modifié"
+  "title": "Comment apprendre Python en 30 jours",
+  "description": "Un guide complet pour les débutants qui veulent maîtriser Python",
+  "use_case": "educational",
+  "language": "fr",
+  "style": "professional",
+  "duration": 60,
+  "nb_section": 3,
+  "video_inspirations": [
+    "https://www.youtube.com/watch?v=example1",
+    "https://www.youtube.com/watch?v=example2"
+  ]
 }
 ```
 
-**Supprimer un exemple**
+**Response:**
+```json
+{
+  "script_sections": [
+    "Introduction: Bienvenue dans ce guide...",
+    "Section 2: Les fondamentaux de Python...",
+    "Conclusion: Vous avez maintenant..."
+  ],
+  "script_text": "Introduction: Bienvenue...\n\nSection 2: Les fondamentaux...\n\nConclusion: Vous avez...",
+  "status": "script_generated",
+  "keywords": "python, programmation, tutorial, débutant, apprentissage",
+  "video_description": "Découvrez comment maîtriser Python en 30 jours...",
+  "title": "Maîtrisez Python en 30 Jours - Guide Complet"
+}
+```
+
+### 4. Régénérer uniquement les métadonnées
+
 ```http
-DELETE /api/v1/examples/{id}
+POST /api/v1/scripts/{project_id}
+Content-Type: application/json
+
+{
+  "title": "Python Tutorial",
+  "description": "Learn Python programming",
+  "use_case": "educational",
+  "language": "en",
+  "style": "professional",
+  "script_text": "Welcome to this Python tutorial. In this video...",
+  "regenerer_script": false
+}
 ```
 
-## 💻 Développement
+**Response:**
+```json
+{
+  "script_sections": null,
+  "script_text": "Welcome to this Python tutorial. In this video...",
+  "status": "script_generated",
+  "keywords": "python, tutorial, programming, learn",
+  "video_description": "Learn Python programming with this comprehensive tutorial...",
+  "title": "Complete Python Programming Tutorial for Beginners"
+}
+```
 
-### Commandes Makefile
+## 🤖 Agents LLM
+
+### 1. Title Agent
+**But:** Générer un titre accrocheur et optimisé SEO
+
+**Entrées:**
+- description
+- use_case
+- style
+- language
+
+**Sortie:** Titre (40-60 caractères)
+
+### 2. Sections Agent
+**But:** Créer les sections structurées du script
+
+**Entrées:**
+- description
+- video_inspirations (transcriptions)
+- duration
+- nb_section
+- style
+- language
+- use_case
+
+**Sortie:** Sections + script concaténé
+
+### 3. Description Agent
+**But:** Générer une description YouTube/TikTok optimisée
+
+**Entrées:**
+- script_text
+- keywords
+- language
+
+**Sortie:** Description avec hashtags et CTA
+
+### 4. Keywords Agent
+**But:** Extraire des mots-clés SEO pertinents
+
+**Entrées:**
+- script_text
+- description
+- use_case
+
+**Sortie:** Liste de mots-clés (8-12)
+
+## 📄 Use Cases supportés
+
+- `storytelling` - Narration d'histoires
+- `youtube_short` - Contenu court pour YouTube Shorts
+- `explanation` - Vidéos explicatives
+- `commercial` - Publicités et promotions
+- `inspirational` - Contenu motivationnel
+- `educational` - Tutoriels et formations
+- `tutorial` - Guides pas-à-pas
+
+## 🎨 Styles supportés
+
+- `educational` - Éducatif et informatif
+- `inspirational` - Inspirant et motivant
+- `comedic` - Humoristique
+- `dramatic` - Dramatique et émotionnel
+- `casual` - Décontracté et conversationnel
+- `professional` - Professionnel et formel
+
+## 🌍 Langues supportées
+
+- `en` - Anglais
+- `fr` - Français
+- `es` - Espagnol
+- `de` - Allemand
+- `it` - Italien
+- `pt` - Portugais
+
+## 📝 Documentation interactive
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+
+## 🔑 Configuration des API Keys
+
+### DeepSeek (LLM)
+
+1. Créez un compte sur [DeepSeek](https://platform.deepseek.com/)
+2. Générez une clé API
+3. Ajoutez-la dans `.env` comme `DEEPSEEK_API_KEY`
+
+### AssemblyAI (Transcription)
+
+1. Créez un compte sur [AssemblyAI](https://www.assemblyai.com/)
+2. Générez une clé API
+3. Ajoutez-la dans `.env` comme `ASSEMBLYAI_API_KEY`
+
+## ⚠️ Limitations
+
+- **YouTube**: Supporté via PyTubeFix
+- **Facebook**: Téléchargement limité (restrictions de la plateforme)
+- **Durée de transcription**: Dépend de la longueur de la vidéo
+- **Coûts**: AssemblyAI et DeepSeek sont des services payants
+
+## 🐞 Dépannage
+
+### Erreur "LLM client not initialized"
+
+→ Vérifiez que `DEEPSEEK_API_KEY` est correctement configuré dans `.env`
+
+### Erreur "Transcription service not initialized"
+
+→ Vérifiez que `ASSEMBLYAI_API_KEY` est correctement configuré dans `.env`
+
+### YouTube download fails
+
+→ Certaines vidéos peuvent être protégées. Essayez une autre vidéo.
+
+### Facebook videos not working
+
+→ Le téléchargement Facebook est limité. Utilisez YouTube pour l'instant.
+
+## 📚 Exemples d'utilisation
+
+### Exemple 1: Vidéo courte (30s)
 
 ```bash
-make help          # Afficher l'aide
-make install       # Installer les dépendances
-make run           # Lancer l'application (utilise APP_PORT)
-make run-docker    # Lancer avec Docker Compose
-make stop          # Stopper les containers
-make type-check    # Vérification des types (mypy)
-make clean         # Nettoyer les caches
-make dev           # Setup environnement dev
+curl -X POST "http://localhost:8000/api/v1/scripts/proj123" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Quick Python Tip",
+    "description": "Learn list comprehension in 30 seconds",
+    "use_case": "youtube_short",
+    "language": "en",
+    "style": "casual"
+  }'
 ```
 
-### Type Checking
+### Exemple 2: Tutoriel long avec inspirations
 
 ```bash
-make type-check
-# OU
-mypy app/
+curl -X POST "http://localhost:8000/api/v1/scripts/proj456" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Complete Django Course",
+    "description": "Full Django web development tutorial",
+    "use_case": "tutorial",
+    "language": "en",
+    "style": "educational",
+    "duration": 300,
+    "nb_section": 5,
+    "video_inspirations": [
+      "https://www.youtube.com/watch?v=example"
+    ]
+  }'
 ```
 
-Configuration mypy dans `mypy.ini` (mode modéré, pas trop strict).
-
-## 🐳 Docker
-
-### Build et Run
+### Exemple 3: Régénération métadonnées uniquement
 
 ```bash
-# Avec Docker Compose (recommandé)
-make run-docker
-# OU
-docker-compose up --build
-
-# Stopper les containers
-make stop
-# OU
-docker-compose down
+curl -X POST "http://localhost:8000/api/v1/scripts/proj789" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "My Video",
+    "description": "Existing video content",
+    "use_case": "educational",
+    "language": "fr",
+    "style": "professional",
+    "script_text": "Bonjour et bienvenue dans cette vidéo...",
+    "regenerer_script": false
+  }'
 ```
 
-### Variables d'environnement Docker
+## 🛡️ Sécurité
 
-Le port est configurable via `APP_PORT` dans le fichier `.env`. Docker Compose et le Dockerfile utilisent automatiquement cette variable.
+- Ne commitez **JAMAIS** vos clés API dans Git
+- Utilisez `.env` pour les secrets (déjà dans `.gitignore`)
+- En production, utilisez des gestionnaires de secrets (AWS Secrets Manager, etc.)
 
-```bash
-# Dans .env
-APP_PORT=8080  # Changez le port ici
-
-# Docker utilisera automatiquement ce port
-docker-compose up
-```
-
-### Build image seule
-
-```bash
-docker build -t fastapi-clean-arch --build-arg APP_PORT=8000 .
-docker run -p 8000:8000 --env-file .env fastapi-clean-arch
-```
-
-### Dockerfile Multi-stage
-
-Le Dockerfile utilise un build multi-stage pour optimiser la taille de l'image:
-- **Stage 1 (builder)**: Installation des dépendances dans un virtualenv
-- **Stage 2 (runtime)**: Image légère avec uniquement le nécessaire
-- Utilisateur non-root pour la sécurité
-- Health check intégré
-
-## 🧪 Tests
-
-Pour ajouter des tests:
-
-1. Installer pytest:
-```bash
-pip install pytest pytest-asyncio httpx
-```
-
-2. Créer le dossier `tests/`:
-```bash
-mkdir tests
-touch tests/__init__.py
-touch tests/test_example.py
-```
-
-3. Lancer les tests:
-```bash
-pytest tests/ -v
-```
-
-## 📐 Principes SOLID
-
-### Single Responsibility Principle (SRP)
-Chaque classe/module a **une seule responsabilité**:
-- `ExampleRepository` → Accès données uniquement
-- `ExampleService` → Logique métier uniquement
-- `example.py` (routes) → Gestion HTTP uniquement
-
-### Open/Closed Principle (OCP)
-Le code est **ouvert à l'extension**, **fermé à la modification**:
-- Nouvelles fonctionnalités via nouveaux services/repositories
-- Pas de modification du code existant
-
-### Liskov Substitution Principle (LSP)
-Les abstractions peuvent être **substituées** par leurs implémentations:
-- Repository pattern permet de changer de DB sans toucher au service
-- Interfaces claires et respectées
-
-### Interface Segregation Principle (ISP)
-**Interfaces petites et spécifiques**:
-- Dépendances injection ciblée (pas de God Object)
-- Chaque layer ne dépend que de ce dont il a besoin
-
-### Dependency Inversion Principle (DIP)
-**Dépendance vers les abstractions**, pas les implémentations:
-- Services reçoivent repositories via injection
-- Configuration centralisée dans ConfigService
-- Testabilité maximale (mock facile)
-
-## 📝 Utiliser ce Template
-
-### Pour un nouveau projet
-
-1. **Cloner ce repository**
-```bash
-git clone <this-repo-url> my-new-project
-cd my-new-project
-```
-
-2. **Supprimer l'historique git**
-```bash
-rm -rf .git
-git init
-git add .
-git commit -m "Initial commit from template"
-```
-
-3. **Adapter le template**
-- Renommer `example_*` par vos entités
-- Ajouter vos models dans `app/models/`
-- Créer vos repositories dans `app/repositories/`
-- Implémenter vos services dans `app/services/`
-- Créer vos routes dans `app/api/v1/routes/`
-
-4. **Configuration**
-```bash
-cp .env.example .env
-# Éditer .env avec vos valeurs (notamment MONGODB_URL et APP_PORT)
-```
-
-5. **Lancer**
-```bash
-make install
-make run
-```
-
-## 🔧 Personnalisation du port
-
-Le port est **entièrement paramétrable** depuis un seul endroit (`.env`):
-
-```env
-APP_PORT=8080  # Changez ici
-```
-
-Cette variable est automatiquement utilisée par:
-- ✅ `make run` (Makefile)
-- ✅ `docker-compose.yml`
-- ✅ `Dockerfile`
-- ✅ Health check
-
-## 📄 License
+## 📝 Licence
 
 MIT License - Libre d'utilisation pour vos projets.
 
 ---
 
-**Créé avec ❤️ pour des architectures propres et maintenables**
+**Créé avec ❤️ pour des scripts vidéo de qualité professionnelle**
