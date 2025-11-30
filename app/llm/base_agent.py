@@ -13,15 +13,22 @@ logger = logging.getLogger(__name__)
 class BaseAgent(ABC):
     """Abstract base class for LLM agents."""
 
-    def __init__(self, prompt_file: str, temperature: float = 0.7):
+    def __init__(
+        self,
+        prompt_file: str,
+        temperature: float = 0.7,
+        translate_prompt: bool = True
+    ):
         """Initialize base agent.
 
         Args:
             prompt_file: Path to prompt template file
             temperature: LLM sampling temperature
+            translate_prompt: Whether to translate prompt to target language
         """
         self.llm_client = get_llm_client()
         self.temperature = temperature
+        self.translate_prompt = translate_prompt
         self.prompt_template = self._load_prompt(prompt_file)
         logger.info(f"Initialized {self.__class__.__name__}")
 
@@ -55,10 +62,11 @@ class BaseAgent(ABC):
         """
         return self.prompt_template.format(**kwargs)
 
-    async def generate(self, **kwargs) -> str:
+    async def generate(self, language: str = "en", **kwargs) -> str:
         """Generate output using LLM.
 
         Args:
+            language: Target language for response
             **kwargs: Variables for prompt formatting
 
         Returns:
@@ -73,6 +81,12 @@ class BaseAgent(ABC):
         # Format prompt
         prompt = self._format_prompt(**kwargs)
         
+        # Translate prompt if needed and not English
+        if self.translate_prompt and language != "en":
+            from app.agents.translation_agent import get_translation_agent
+            translation_agent = get_translation_agent()
+            prompt = await translation_agent.translate_prompt(prompt, language)
+
         # Prepare messages
         messages = [
             {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
