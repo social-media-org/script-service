@@ -4,6 +4,7 @@ import logging
 from typing import Optional
 
 from openai import AsyncOpenAI
+import httpx
 
 from app.core.config import settings
 
@@ -22,6 +23,7 @@ class LLMClient:
             self.client = AsyncOpenAI(
                 api_key=settings.deepseek_api_key,
                 base_url=settings.openai_api_base,
+                http_client=httpx.AsyncClient(trust_env=False)
             )
             logger.info(f"LLM Client initialized with base URL: {settings.openai_api_base}")
 

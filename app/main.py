@@ -7,6 +7,7 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.core.api_keyp_formatter import ApiKeyFormatter
 from app.core.config import settings
 from app.core.exceptions import setup_exception_handlers
 from app.core.logging import get_logger, setup_logging
@@ -22,6 +23,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
     logger.info("Starting Script Generation Service")
     print("✅ Script Generation Service started")
+    print("✅ DEEPSEEK api key :", ApiKeyFormatter.mask(settings.deepseek_api_key))
+    print("✅ Assembly ai api key :", ApiKeyFormatter.mask(settings.assemblyai_api_key))
 
     yield
 

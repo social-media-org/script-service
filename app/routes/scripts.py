@@ -1,6 +1,7 @@
 """API routes for script generation."""
 
 import logging
+import traceback
 from fastapi import APIRouter, HTTPException, status
 
 from app.models.script import ScriptGenerationRequest, ScriptGenerationResponse
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/scripts", tags=["Scripts"])
 
 
 @router.post(
-    "/{project_id}",
+    "/generate",
     response_model=ScriptGenerationResponse,
     status_code=status.HTTP_200_OK,
     summary="Generate video script",
@@ -27,13 +28,11 @@ router = APIRouter(prefix="/scripts", tags=["Scripts"])
     """
 )
 async def generate_script(
-    project_id: str,
     request: ScriptGenerationRequest
 ) -> ScriptGenerationResponse:
     """Generate video script for a project.
 
     Args:
-        project_id: Unique project identifier
         request: Script generation request
 
     Returns:
@@ -42,23 +41,18 @@ async def generate_script(
     Raises:
         HTTPException: If generation fails
     """
-    logger.info(f"Received script generation request for project_id={project_id}")
+    logger.info(f"Received script generation request for {request.title}")
     
     try:
         # Get orchestrator and generate script
         orchestrator = get_orchestrator()
         response = await orchestrator.generate_script(request)
         
-        logger.info(f"Script generation successful for project_id={project_id}")
+        logger.info(f"Script generation successful")
         return response
 
-    except ValueError as e:
-        logger.error(f"Validation error: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(e)
-        )
     except Exception as e:
+        traceback.print_exc()
         logger.error(f"Script generation failed: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -3,6 +3,7 @@
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
+from string import Template
 from typing import Optional
 
 from app.core.llm_client import get_llm_client
@@ -60,7 +61,7 @@ class BaseAgent(ABC):
         Returns:
             Formatted prompt string
         """
-        return self.prompt_template.format(**kwargs)
+        return Template(self.prompt_template).safe_substitute(**kwargs)
 
     async def generate(self, language: str = "en", **kwargs) -> str:
         """Generate output using LLM.
