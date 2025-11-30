@@ -48,7 +48,8 @@ class ScriptOrchestrator:
         if request.video_inspirations:
             logger.info(f"Transcribing {len(request.video_inspirations)} inspiration video(s)")
             inspiration_content = await self.transcription_service.transcribe_videos(
-                request.video_inspirations
+                request.video_inspirations,
+                request.title  # Pass title for cache directory
             )
             if inspiration_content:
                 logger.info(f"Transcription completed: {len(inspiration_content)} chars")
