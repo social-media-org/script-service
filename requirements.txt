@@ -1,0 +1,26 @@
+# FastAPI and server
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# MongoDB
+motor==3.6.0
+
+# Configuration and validation
+pydantic==2.10.3
+pydantic-settings==2.6.1
+python-dotenv==1.0.1
+
+# Logging
+json-logging==1.5.1
+
+# Type checking
+mypy==1.13.0
+
+# Audio processing
+pydub==0.25.1
+
+# ElevenLabs API
+elevenlabs==2.21.0
+
+# Additional dependencies for ElevenLabs services
+# asyncio is a Python standard library, no need to include
