@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 from typing import Optional
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -45,9 +46,17 @@ class Settings(BaseSettings):
     # Transcription
     assemblyai_api_key: str = ""
 
+    # Storage
+    videos_storage_path: str = "resources/videos"
+
     # Script generation defaults
     default_duration: int = 30  # seconds
     default_nb_sections: int = 1
+
+    @property
+    def videos_storage_dir(self) -> Path:
+        """Get videos storage directory as Path object."""
+        return Path(self.videos_storage_path)
 
 
 @lru_cache
