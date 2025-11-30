@@ -22,3 +22,6 @@ pytubefix==10.3.5
 
 # HTTP requests
 httpx==0.28.1
+
+# Utilities
+python-slugify==8.0.4
