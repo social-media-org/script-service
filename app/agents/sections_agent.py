@@ -1,18 +1,19 @@
 """Agent for generating script sections."""
 
 import logging
-from typing import Optional
+from typing import Optional, Tuple, List
 from pathlib import Path
 
-from app.core.llm_client import get_llm_client
 from app.core.config import settings
 from string import Template
+from app.llm.base_agent import BaseAgent
+from app.agents.translation_agent import get_translation_agent # Imported here for clarity
 
 
 logger = logging.getLogger(__name__)
 
 
-class SectionsAgent:
+class SectionsAgent(BaseAgent):
     """Agent specialized in generating structured script sections."""
 
     def __init__(self, temperature: float = 0.7):
@@ -21,29 +22,37 @@ class SectionsAgent:
         Args:
             temperature: Balanced temperature for creative but coherent scripts
         """
-        self.llm_client = get_llm_client()
-        self.temperature = temperature
-        
+        super().__init__(prompt_file=None, temperature=temperature, translate_prompt=False)
         
         # Load both prompt templates
-        prompts_dir = Path(__file__).parent.parent / "llm" / "prompts"
-        with open(prompts_dir / "sections_prompt_single.txt", 'r', encoding='utf-8') as f:
-            self.prompt_template_single = f.read()
-        with open(prompts_dir / "sections_prompt_multiple.txt", 'r', encoding='utf-8') as f:
-            self.prompt_template_multiple = f.read()
+        self.prompt_template_single = self._load_sections_prompt("sections_prompt_single.txt")
+        self.prompt_template_multiple = self._load_sections_prompt("sections_prompt_multiple.txt")
         
         logger.info("SectionsAgent initialized with dynamic prompt selection")
 
-    async def generate_sections(
+    def _load_sections_prompt(self, prompt_file: str) -> str:
+        """Load prompt template from file for sections agent."""
+        prompt_path = Path(__file__).parent.parent / "llm" / "prompts" / prompt_file
+        if not prompt_path.exists():
+            raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+        
+        with open(prompt_path, 'r', encoding='utf-8') as f:
+            return f.read()
+
+    def _get_max_tokens(self) -> Optional[int]:
+        """Get maximum tokens for this agent (8000 for sections)."""
+        return 8000
+
+    async def generate(
         self,
         description: str,
         use_case: str,
         style: str,
-        language: str,
+        language: str = "en",
         duration: Optional[int] = None,
         nb_section: Optional[int] = None,
         inspiration_content: str = ""
-    ) -> tuple[list[str], str]:
+    ) -> Tuple[List[str], str]:
         """Generate script sections.
 
         Args:
@@ -68,7 +77,7 @@ class SectionsAgent:
         )
 
         # Prepare inspiration content message
-        if  inspiration_content:
+        if inspiration_content:
             inspiration_content = "Inspiration Content : " + inspiration_content
         
 
@@ -79,7 +88,8 @@ class SectionsAgent:
         else:
             prompt_template = self.prompt_template_multiple
         
-        prompt = Template(prompt_template).safe_substitute(
+        prompt_content = self._format_prompt(
+            prompt_template,
             description=description,
             use_case=use_case,
             style=style,
@@ -87,25 +97,26 @@ class SectionsAgent:
             nb_section=nb_section,
             inspiration_content=inspiration_content,
         )
-        
+        logger.info(f"Prompt brute : {prompt_content}")
 
-        # Translate prompt if needed
+        # Translate prompt if needed and not English (BaseAgent handles translation based on translate_prompt flag, but we do it manually here for specific prompt selection)
         if language != "en":
-            from app.agents.translation_agent import get_translation_agent
             translation_agent = get_translation_agent()
-            prompt = await translation_agent.translate_prompt(prompt, language)
+            prompt_content = await translation_agent.translate_prompt(prompt_content, language)
+            logger.info(f"Prompt traduit en {language} : {prompt_content} ")
 
-        # Generate script
+        # Prepare messages
         messages = [
             {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
-            {"role": "user", "content": prompt}
+            {"role": "user", "content": prompt_content}
         ]
 
+        # Generate response using llm_client directly since generate method is overridden
         try:
             script_output = await self.llm_client.chat_completion(
                 messages=messages,
                 temperature=self.temperature,
-                max_tokens=8000
+                max_tokens=self._get_max_tokens()
             )
         except Exception as e:
             logger.error(f"Sections generation failed: {e}")

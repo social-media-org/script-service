@@ -16,7 +16,7 @@ class BaseAgent(ABC):
 
     def __init__(
         self,
-        prompt_file: str,
+        prompt_file: Optional[str] = None,
         temperature: float = 0.7,
         translate_prompt: bool = True
     ):
@@ -30,7 +30,10 @@ class BaseAgent(ABC):
         self.llm_client = get_llm_client()
         self.temperature = temperature
         self.translate_prompt = translate_prompt
-        self.prompt_template = self._load_prompt(prompt_file)
+        if prompt_file:
+            self.prompt_template = self._load_prompt(prompt_file)
+        else:
+            self.prompt_template = None
         logger.info(f"Initialized {self.__class__.__name__}")
 
     def _load_prompt(self, prompt_file: str) -> str:
@@ -52,16 +55,17 @@ class BaseAgent(ABC):
         with open(prompt_path, 'r', encoding='utf-8') as f:
             return f.read()
 
-    def _format_prompt(self, **kwargs) -> str:
+    def _format_prompt(self, prompt_template_str: str, **kwargs) -> str:
         """Format prompt template with provided variables.
 
         Args:
+            prompt_template_str: The prompt template string to use.
             **kwargs: Variables to substitute in prompt
 
         Returns:
             Formatted prompt string
         """
-        return Template(self.prompt_template).safe_substitute(**kwargs)
+        return Template(prompt_template_str).safe_substitute(**kwargs)
 
     async def generate(self, language: str = "en", **kwargs) -> str:
         """Generate output using LLM.
@@ -79,8 +83,11 @@ class BaseAgent(ABC):
         if not self.llm_client.is_available():
             raise ValueError(f"{self.__class__.__name__} requires LLM client. Check API key configuration.")
 
-        # Format prompt
-        prompt = self._format_prompt(**kwargs)
+        # Format prompt (assuming child class handles template selection if multiple exist)
+        if self.prompt_template is None:
+            raise ValueError("BaseAgent requires a prompt_template or override generate method.")
+        
+        prompt = self._format_prompt(self.prompt_template, **kwargs)
         logger.info(f"Prompt brute : {prompt}")
         
         # Translate prompt if needed and not English
