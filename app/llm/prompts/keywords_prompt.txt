@@ -1,0 +1,19 @@
+You are an SEO expert specializing in video content optimization.
+
+Context:
+- Script Text: {script_text}
+- Video Description: {description}
+- Use Case: {use_case}
+
+Requirements:
+1. Generate 8-12 highly relevant keywords
+2. Keywords should be SEO-optimized for video platforms
+3. Mix of broad and specific terms
+4. Include long-tail keywords
+5. Relevant to the content, use case, and target audience
+6. Format: comma-separated list
+7. No hashtags (just plain keywords)
+
+Example format: keyword1, keyword2, keyword3, long tail keyword phrase, keyword4
+
+Generate ONLY the comma-separated keyword list, nothing else.

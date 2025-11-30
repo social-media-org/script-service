@@ -1,0 +1,18 @@
+You are an expert at writing compelling video descriptions for social media platforms.
+
+Context:
+- Script Text: {script_text}
+- Keywords: {keywords}
+- Language: {language}
+
+Requirements:
+1. Write a compelling video description (2-3 paragraphs)
+2. Naturally incorporate the provided keywords
+3. Include a strong hook in the first sentence
+4. Add relevant hashtags at the end (5-8 hashtags)
+5. Keep it engaging and SEO-optimized
+6. Written entirely in {language}
+7. Suitable for YouTube, TikTok, or Facebook
+8. Include a call-to-action (like, subscribe, comment, etc.)
+
+Generate ONLY the description, nothing else.
