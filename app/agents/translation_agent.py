@@ -25,7 +25,7 @@ class TranslationAgent:
     def __init__(self):
         """Initialize translation agent."""
         self.llm_client = get_llm_client()
-        logger.info("TranslationAgent initialized")
+        # logger.info("TranslationAgent initialized") # Log only when singleton is truly created
 
     async def translate_prompt(
         self,
@@ -100,4 +100,5 @@ def get_translation_agent() -> TranslationAgent:
     global _translation_agent
     if _translation_agent is None:
         _translation_agent = TranslationAgent()
+        logger.info("TranslationAgent singleton initialized")
     return _translation_agent

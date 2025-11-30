@@ -43,7 +43,7 @@ class SectionsAgent(BaseAgent):
         """Get maximum tokens for this agent (8000 for sections)."""
         return 8000
 
-    async def generate(
+    async def generate_section(
         self,
         description: str,
         use_case: str,

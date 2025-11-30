@@ -63,7 +63,7 @@ class ScriptOrchestrator:
         if request.regenerer_script:
             # Generate new script
             logger.info("Generating new script sections")
-            sections, script_text = await self.sections_agent.generate_sections(
+            sections, script_text = await self.sections_agent.generate_section(
                 description=request.description,
                 use_case=request.use_case,
                 style=request.style,
