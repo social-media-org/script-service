@@ -17,7 +17,11 @@ class DescriptionAgent(BaseAgent):
         Args:
             temperature: Balanced temperature for engaging descriptions
         """
-        super().__init__(prompt_file="description_prompt.txt", temperature=temperature)
+        super().__init__(
+            prompt_file="description_prompt.txt",
+            temperature=temperature,
+            translate_prompt=True
+        )
 
     def _get_max_tokens(self) -> Optional[int]:
         """Get maximum tokens for description generation.
@@ -52,9 +56,9 @@ class DescriptionAgent(BaseAgent):
             script_preview = script_text
 
         description = await self.generate(
+            language=language,
             script_text=script_preview,
-            keywords=keywords or "video content",
-            language=language
+            keywords=keywords or "video content"
         )
 
         logger.info(f"Generated description: {len(description)} chars")

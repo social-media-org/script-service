@@ -17,7 +17,11 @@ class TitleAgent(BaseAgent):
         Args:
             temperature: Higher temperature for more creative titles
         """
-        super().__init__(prompt_file="title_prompt.txt", temperature=temperature)
+        super().__init__(
+            prompt_file="title_prompt.txt",
+            temperature=temperature,
+            translate_prompt=True
+        )
 
     def _get_max_tokens(self) -> Optional[int]:
         """Get maximum tokens for title generation.
@@ -48,10 +52,10 @@ class TitleAgent(BaseAgent):
         logger.info(f"Generating title for use_case={use_case}, language={language}")
         
         title = await self.generate(
+            language=language,
             description=description,
             use_case=use_case,
-            style=style,
-            language=language
+            style=style
         )
 
         # Clean up the title (remove quotes if present)

@@ -17,7 +17,11 @@ class KeywordsAgent(BaseAgent):
         Args:
             temperature: Lower temperature for more focused keywords
         """
-        super().__init__(prompt_file="keywords_prompt.txt", temperature=temperature)
+        super().__init__(
+            prompt_file="keywords_prompt.txt",
+            temperature=temperature,
+            translate_prompt=False  # Keywords don't need translation
+        )
 
     def _get_max_tokens(self) -> Optional[int]:
         """Get maximum tokens for keywords generation.
@@ -31,7 +35,8 @@ class KeywordsAgent(BaseAgent):
         self,
         script_text: str,
         description: str,
-        use_case: str
+        use_case: str,
+        language: str = "en"
     ) -> str:
         """Generate SEO keywords.
 
@@ -39,6 +44,7 @@ class KeywordsAgent(BaseAgent):
             script_text: Complete script text
             description: Video description
             use_case: Video use case type
+            language: Language (for context, but keywords stay international)
 
         Returns:
             Comma-separated keywords
@@ -50,6 +56,7 @@ class KeywordsAgent(BaseAgent):
         desc_preview = description[:500] + "..." if len(description) > 500 else description
 
         keywords = await self.generate(
+            language=language,
             script_text=script_preview,
             description=desc_preview,
             use_case=use_case
