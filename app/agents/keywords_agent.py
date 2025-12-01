@@ -29,7 +29,7 @@ class KeywordsAgent(BaseAgent):
         Returns:
             Max tokens
         """
-        return 200
+        return 4000
 
     async def generate_keywords(
         self,
@@ -52,13 +52,11 @@ class KeywordsAgent(BaseAgent):
         logger.info(f"Generating keywords for use_case={use_case}")
         
         # Truncate texts if too long
-        script_preview = script_text[:1000] + "..." if len(script_text) > 1000 else script_text
-        desc_preview = description[:500] + "..." if len(description) > 500 else description
-
+    
         formatted_prompt = self._format_prompt(
             self.prompt_template,
-            script_text=script_preview,
-            description=desc_preview,
+            script_text=script_text,
+            description=description,
             use_case=use_case
         )
 
