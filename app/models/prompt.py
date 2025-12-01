@@ -1,11 +1,13 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic.functional_validators import BeforeValidator
+from typing import Optional, Annotated
+from bson import ObjectId
 
 class Prompt(BaseModel):
     """
     Represents a prompt stored in MongoDB.
     """
-    id: Optional[str] = Field(alias="_id", default=None)
+    id: Optional[Annotated[str, BeforeValidator(str)]] = Field(alias="_id", default=None)
     name: str = Field(..., description="Unique name of the prompt (e.g., 'description_prompt')")
     language: str = Field(..., description="Language of the prompt (e.g., 'en', 'fr')")
     content: str = Field(..., description="The actual prompt text")
@@ -13,6 +15,7 @@ class Prompt(BaseModel):
 
     class Config:
         populate_by_name = True
+        arbitrary_types_allowed = True
         json_schema_extra = {
             "example": {
                 "name": "description_prompt",

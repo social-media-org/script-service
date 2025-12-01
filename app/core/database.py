@@ -30,7 +30,9 @@ class MongoDB:
             )
             self.database = self.client[settings.DB_NAME]
             await self.database.command("ping")  # Test connection
-            logger.info("MongoDB connected successfully.")
+            print("✅   MongoDB connected successfully")
+            print(f"    DB_NAME={settings.DB_NAME}  ")
+
         except Exception as e:
             logger.error(f"Could not connect to MongoDB: {e}")
             self.client = None

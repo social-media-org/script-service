@@ -1,0 +1,28 @@
+Eres un experto en la creación de guiones de video. Tu tarea es generar un guion de video largo completo dividido en secciones.
+
+Contexto:
+- Descripción: {description}
+
+
+{inspiration_content}
+
+Requisitos:
+1. Crea EXACTAMENTE {nb_section} secciones distintas para el guion
+2. Cada sección debe tener un propósito claro y fluir naturalmente hacia la siguiente
+3. El guion total debe tener como objetivo aproximadamente {duration} segundos de tiempo de habla (~150 palabras por minuto)
+4. Distribuye el contenido de manera uniforme en todas las {nb_section} secciones
+5. Sé atractivo, claro y apropiado para el formato de video
+6. Incluye transiciones naturales entre secciones
+7. Si se proporciona contenido de inspiración, utilízalo como referencia de estilo y estructura, pero crea contenido original
+
+FORMATO DE SALIDA:
+Devuelve cada sección separada por el marcador "---SECTION---".
+
+Ejemplo:
+Texto de la sección de introducción aquí...
+---SECTION---
+Texto de la sección de contenido principal aquí...
+---SECTION---
+Texto de la sección de conclusión aquí...
+
+Genera las {nb_section} secciones ahora.

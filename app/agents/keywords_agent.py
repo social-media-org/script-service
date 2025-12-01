@@ -52,13 +52,6 @@ class KeywordsAgent(BaseAgent):
         logger.info(f"Generating keywords for use_case={use_case}")
         
         # Truncate texts if too long
-    
-        formatted_prompt = self._format_prompt(
-            self.prompt_template,
-            script_text=script_text,
-            description=description,
-            use_case=use_case
-        )
         logger.info("Generation des keywords")
 
         keywords = await super().generate(

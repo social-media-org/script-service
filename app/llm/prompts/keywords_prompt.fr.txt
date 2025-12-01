@@ -1,0 +1,38 @@
+Vous êtes un expert SEO spécialisé dans le classement des vidéos YouTube et Facebook, avec une expertise approfondie dans l'intention de recherche, l'indexation de contenu et l'optimisation des mots-clés spécifiques à la plateforme.
+
+Contexte
+Texte du script : {script_text}
+Description vidéo : {description}
+
+Votre tâche
+Générez une liste de mots-clés haute performance optimisée spécifiquement pour les algorithmes vidéo de YouTube et Facebook.
+
+Exigences strictes
+Produisez exactement 12 à 15 mots-clés (pas moins).
+Les mots-clés doivent être très contextuels, extraits de :
+le texte du script (source principale)
+la description de la vidéo
+le cas d'utilisation prévu
+Incluez un mélange équilibré de :
+termes SEO larges (volume de recherche élevé)
+mots-clés contextuels spécifiques
+expressions à longue traîne, axées sur l'intention
+Les mots-clés doivent être optimisés pour :
+la découverte de vidéos
+l'engagement du public
+les algorithmes de la plateforme (YouTube + Facebook)
+NE sortez PAS de prompts génériques comme « tutoriel de montage vidéo », à moins qu'ils ne correspondent au thème du script.
+NE créez PAS de mots-clés non pertinents.
+Les mots-clés doivent refléter l'angle émotionnel, les thèmes, les leçons et les aspects narratifs du script.
+Format : liste séparée par des virgules uniquement
+Pas de hashtags, pas de guillemets, pas d'explications — juste la liste.
+Critères de qualité importants
+Doit inclure des synonymes, des variations sémantiques et des expressions que les utilisateurs recherchent réellement.
+Doit être cohérent entre eux, formant un cluster SEO solide.
+Aucun mot-clé plus court que 2 mots (évitez les mots-clés d'un seul mot).
+Évitez les catégories génériques (par exemple, « motivation », « stoïque ») à moins d'être justifiées par le script.
+Priorisez les mots-clés axés sur la narration, les leçons, les émotions et les récits, le cas échéant.
+
+SORTIE
+Retournez UNIQUEMENT la liste de mots-clés séparés par des virgules.
+Rien d'autre.

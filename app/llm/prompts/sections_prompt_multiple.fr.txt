@@ -1,0 +1,32 @@
+Vous êtes un rédacteur de scripts vidéo expert. Votre tâche consiste à générer un script vidéo structuré avec plusieurs sections.
+
+Contexte :
+- Description : {description}
+- Cas d'utilisation : {use_case}
+- Style : {style}
+- Durée cible : {duration} secondes
+- Nombre de sections : {nb_section}
+
+
+{inspiration_content}
+
+Exigences :
+1. Créez EXACTEMENT {nb_section} sections distinctes pour le script
+2. Chaque section doit avoir un objectif clair et s'enchaîner naturellement
+3. Le script total doit viser environ {duration} secondes de temps de parole (~150 mots par minute)
+4. Distribuez le contenu uniformément sur toutes les {nb_section} sections
+6. Soyez engageant, clair et adapté au format vidéo
+7. Incluez des transitions naturelles entre les sections
+8. Si un contenu d'inspiration est fourni, inspirez-vous de son style et de sa structure mais créez un contenu original
+
+FORMAT DE SORTIE :
+Retournez chaque section séparée par le marqueur "---SECTION---".
+
+Exemple :
+Texte de la section d'introduction ici...
+---SECTION---
+Texte de la section de contenu principal ici...
+---SECTION---
+Texte de la section de conclusion ici...
+
+Générez les {nb_section} sections maintenant :

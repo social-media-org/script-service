@@ -1,0 +1,13 @@
+Eres un experto redactor de contenido. Tu tarea es generar un artículo completo sin secciones explícitas.
+
+Contexto:
+- Descripción: {description}
+
+
+Requisitos:
+1. Escribe un artículo único y continuo adecuado para un guion de video.
+2. El artículo debe fluir lógicamente de principio a fin.
+3. El artículo total debe tener como objetivo aproximadamente {duration} segundos de tiempo de habla (~150 palabras por minuto).
+4. Sé atractivo, informativo y apropiado para el formato de video.
+
+Genera SÓLO el artículo, nada más.

@@ -12,43 +12,54 @@ logger = logging.getLogger(__name__)
 PROMPT_FILES = {
     "description_prompt": {
         "path": "description_prompt.txt",
+        "fr_path": "description_prompt.fr.txt",
+        "es_path": "description_prompt.es.txt",
         "type": "description",
         "name": "description_prompt"
     },
     "keywords_prompt": {
         "path": "keywords_prompt.txt",
+        "fr_path": "keywords_prompt.fr.txt",
+        "es_path": "keywords_prompt.es.txt",
         "type": "keywords",
         "name": "keywords_prompt"
     },
     "sections_prompt_multiple": {
         "path": "sections_prompt_multiple.txt",
+        "fr_path": "sections_prompt_multiple.fr.txt",
+        "es_path": "sections_prompt_multiple.es.txt",
         "type": "sections_multiple",
         "name": "sections_prompt_multiple"
     },
     "sections_prompt_single": {
         "path": "sections_prompt_single.txt",
+        "fr_path": "sections_prompt_single.fr.txt",
+        "es_path": "sections_prompt_single.es.txt",
         "type": "sections_single",
         "name": "sections_prompt_single"
     },
     "title_prompt": {
         "path": "title_prompt.txt",
+        "fr_path": "title_prompt.fr.txt",
+        "es_path": "title_prompt.es.txt",
         "type": "title",
         "name": "title_prompt"
     },
-    # Assuming article_no_sections is a new prompt type you want to add
     "article_no_sections": {
-        "path": "article_no_sections_prompt.txt", # This file would need to be created
+        "path": "article_no_sections_prompt.txt",
+        "fr_path": "article_no_sections_prompt.fr.txt",
+        "es_path": "article_no_sections_prompt.es.txt",
         "type": "article_no_sections",
         "name": "article_no_sections_prompt"
     }
 }
 
-DEFAULT_LANGUAGES = ["en", "fr"] # Example languages
+DEFAULT_LANGUAGES = ["en", "fr", "es"]
 
 async def migrate_prompts_to_mongodb():
     """
     Migrates prompt templates from files to MongoDB.
-    This function will be run once at application startup if the collection is empty.
+    This function will update existing prompts and insert new ones.
     """
     client = None
     try:
@@ -56,19 +67,25 @@ async def migrate_prompts_to_mongodb():
         database = client[settings.DB_NAME]
         prompts_collection = database["prompts"]
 
-        logger.info("Starting prompt migration/update to MongoDB...")
+        logger.info("Starting prompt migration/update to MongoDB using file-based translations...")
 
         for prompt_key, prompt_info in PROMPT_FILES.items():
-            prompt_file_path = Path(__file__).parent / "prompts" / prompt_info["path"]
-            
-            if not prompt_file_path.exists():
-                logger.warning(f"Prompt file not found: {prompt_file_path}. Skipping.")
-                continue
-
-            with open(prompt_file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-
             for lang in DEFAULT_LANGUAGES:
+                file_to_read = prompt_info["path"]
+                if lang == "fr" and "fr_path" in prompt_info:
+                    file_to_read = prompt_info["fr_path"]
+                elif lang == "es" and "es_path" in prompt_info:
+                    file_to_read = prompt_info["es_path"]
+
+                prompt_file_path = Path(__file__).parent / "prompts" / file_to_read
+                
+                if not prompt_file_path.exists():
+                    logger.warning(f"Prompt file not found: {prompt_file_path} for language {lang}. Skipping.")
+                    continue
+
+                with open(prompt_file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+
                 full_prompt_name = f"{prompt_info['name']}_{lang}"
                 prompt_data = Prompt(
                     name=full_prompt_name,
@@ -77,7 +94,6 @@ async def migrate_prompts_to_mongodb():
                     type=prompt_info["type"]
                 )
                 
-                # Use update_one with upsert=True to either insert or update the prompt
                 result = await prompts_collection.update_one(
                     {"name": full_prompt_name, "language": lang},
                     {"$set": prompt_data.model_dump(by_alias=True, exclude_none=True)},
@@ -100,6 +116,4 @@ async def migrate_prompts_to_mongodb():
             client.close()
 
 if __name__ == "__main__":
-    # This block allows you to run the migration script independently for testing
-    # You would typically call migrate_prompts_to_mongodb from your application's lifespan
     asyncio.run(migrate_prompts_to_mongodb())
