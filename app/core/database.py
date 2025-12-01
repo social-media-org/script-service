@@ -1,46 +1,61 @@
-"""Database connection management."""
+import logging
+from typing import Optional
 
-import os
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
-from app.core.logging import get_logger
-from pymongo.server_api import ServerApi
-
 
 from app.core.config import settings
-logger = get_logger(__name__)
 
+logger = logging.getLogger(__name__)
 
-# MongoDB client (will be initialized in lifespan)
-mongo_client: AsyncIOMotorClient | None = None
+class MongoDB:
+    """
+    Manages MongoDB connection and provides access to the database client.
+    """
+    client: Optional[AsyncIOMotorClient] = None
+    database: Optional[AsyncIOMotorDatabase] = None
 
-async def connect_to_mongo():
-    global db_client, db   
-    
-    print(f"📊 Connecting to MongoDB with:")
-    print(f"  - DB Name: {settings.DB_NAME}")
-    
-    # MongoDB connection string
-    connection_string = settings.mongodb_url
-    
-    try:
-        db_client = AsyncIOMotorClient(connection_string, server_api=ServerApi('1'))
-        db = db_client[settings.DB_NAME]
-        
-        # Test connection
-        await db_client.admin.command('ping')
-        print(f"✅ Successfully connected to MongoDB database: {settings.DB_NAME}")
-        
-    except Exception as e:
-        print(f"❌ Error connecting to MongoDB: {e}")
-        raise
-    
-async def close_mongo_connection():
-    global db_client
-    if db_client:
-        db_client.close()
-        print("MongoDB connection closed")
+    async def connect(self):
+        """
+        Establishes connection to MongoDB.
+        """
+        if self.client is not None:
+            logger.warning("MongoDB client already connected. Skipping connection.")
+            return
 
-def get_database() -> AsyncIOMotorDatabase:
-    if db_client is None:
-        raise RuntimeError("Database not initialized")
-    return db_client[settings.DB_NAME]
+        try:
+            self.client = AsyncIOMotorClient(
+                settings.mongodb_url,
+                maxPoolSize=settings.mongodb_max_pool_size,
+                minPoolSize=settings.mongodb_min_pool_size,
+            )
+            self.database = self.client[settings.DB_NAME]
+            await self.database.command("ping")  # Test connection
+            logger.info("MongoDB connected successfully.")
+        except Exception as e:
+            logger.error(f"Could not connect to MongoDB: {e}")
+            self.client = None
+            self.database = None
+            raise
+
+    async def close(self):
+        """
+        Closes MongoDB connection.
+        """
+        if self.client:
+            self.client.close()
+            self.client = None
+            self.database = None
+            logger.info("MongoDB connection closed.")
+        else:
+            logger.warning("MongoDB client not connected. Skipping close.")
+
+# Global instance
+db = MongoDB()
+
+async def get_database() -> AsyncIOMotorDatabase:
+    """
+    Dependency to get MongoDB database instance.
+    """
+    if db.database is None:
+        raise ConnectionError("MongoDB database not initialized. Call connect() first.")
+    return db.database

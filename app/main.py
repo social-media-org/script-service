@@ -9,9 +9,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.api_keyp_formatter import ApiKeyFormatter
 from app.core.config import settings
+from app.core.database import db # Import the MongoDB instance
 from app.core.exceptions import setup_exception_handlers
 from app.core.logging import get_logger, setup_logging
-from app.routes import scripts
+from app.llm.prompts_migrator import migrate_prompts_to_mongodb # Import the migration function
+from app.routes import scripts, admin # Import the new admin router
 
 # Setup logging
 setup_logging()
@@ -22,6 +24,8 @@ logger = get_logger(__name__)
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Startup
     logger.info("Starting Script Generation Service")
+    await db.connect() # Connect to MongoDB
+    # Removed automatic prompt migration at startup
     print("✅ Script Generation Service started")
     print("✅ DEEPSEEK api key :", ApiKeyFormatter.mask(settings.deepseek_api_key))
     print("✅ Assembly ai api key :", ApiKeyFormatter.mask(settings.assemblyai_api_key))
@@ -30,6 +34,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     # Shutdown
     logger.info("Shutting down application")
+    await db.close() # Close MongoDB connection
     print("❌ Script Generation Service stopped")
 
 
@@ -84,6 +89,7 @@ def create_app() -> FastAPI:
 
     # Include routers
     app.include_router(scripts.router, prefix=settings.api_v1_prefix)
+    app.include_router(admin.router, prefix=f"{settings.api_v1_prefix}/admin", tags=["Admin"])
 
     return app
 

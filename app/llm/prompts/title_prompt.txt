@@ -2,16 +2,13 @@ You are an expert video title creator. Your task is to generate a catchy, engagi
 
 Context:
 - Description: {description}
-- Use Case: {use_case}
-- Style: {style}
-- Language: {language}
+- Video script: {script_text}
 
 Requirements:
 1. Title should be between 40-60 characters
 2. Must be attention-grabbing and click-worthy
 3. Should include relevant keywords naturally
 4. Appropriate for the specified use case and style
-5. Written in {language}
-6. No clickbait or misleading content
+5. No clickbait or misleading content
 
 Generate ONLY the title, nothing else.

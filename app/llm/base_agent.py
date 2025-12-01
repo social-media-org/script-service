@@ -8,6 +8,7 @@ from string import Template
 from typing import Optional
 
 from app.core.llm_client import get_llm_client
+from app.services.prompt_service import get_prompt_service
 
 logger = logging.getLogger(__name__)
 
@@ -17,44 +18,52 @@ class BaseAgent(ABC):
 
     def __init__(
         self,
-        prompt_file: Optional[str] = None,
+        prompt_name: Optional[str] = None, # Changed from prompt_file to prompt_name
         temperature: float = 0.7,
         translate_prompt: bool = True
     ):
         """Initialize base agent.
 
         Args:
-            prompt_file: Path to prompt template file
+            prompt_name: Name of the prompt in the database
             temperature: LLM sampling temperature
             translate_prompt: Whether to translate prompt to target language
         """
         self.llm_client = get_llm_client()
         self.temperature = temperature
         self.translate_prompt = translate_prompt
-        if prompt_file:
-            self.prompt_template = self._load_prompt(prompt_file)
-        else:
-            self.prompt_template = None
-        logger.info(f"Initialized {self.__class__.__name__}")
+        self.prompt_name = prompt_name # Store prompt_name
+        self.prompt_template: Optional[str] = None # Will be loaded dynamically
+        logger.info(f"Initialized {self.__class__.__name__} with prompt_name={self.prompt_name}")
 
-    def _load_prompt(self, prompt_file: str) -> str:
-        """Load prompt template from file.
+    async def _load_prompt_from_db(self, language: str) -> str:
+        """Load prompt template from database.
 
         Args:
-            prompt_file: Path to prompt file
+            language: Target language for the prompt
 
         Returns:
             Prompt template string
 
         Raises:
-            FileNotFoundError: If prompt file doesn't exist
+            ValueError: If prompt not found in database
         """
-        prompt_path = Path(__file__).parent / "prompts" / prompt_file
-        if not prompt_path.exists():
-            raise FileNotFoundError(f"Prompt file not found: {prompt_path}")
+        if not self.prompt_name:
+            raise ValueError("Prompt name not provided for agent.")
+
+        prompt_service = await get_prompt_service()
+        prompt_content = await prompt_service.get_prompt_content(self.prompt_name, language)
+
+        if not prompt_content:
+            # Fallback to English if French not found, or raise error if English also not found
+            if language != "en":
+                logger.warning(f"Prompt '{self.prompt_name}' not found for language '{language}', trying 'en'.")
+                prompt_content = await prompt_service.get_prompt_content(self.prompt_name, "en")
+            
+            if not prompt_content:
+                raise ValueError(f"Prompt '{self.prompt_name}' not found in database for any language.")
         
-        with open(prompt_path, 'r', encoding='utf-8') as f:
-            return f.read()
+        return prompt_content
 
     def _format_prompt(self, template: str, **kwargs) -> str:
     # Remplacer None par ""
@@ -65,36 +74,31 @@ class BaseAgent(ABC):
 
         return template.format_map(dd)
 
-    async def generate(self, formatted_prompt: str, language: str = "en") -> str:
+    async def generate(self, language: str = "en", **kwargs) -> str:
         """Generate output using LLM.
 
         Args:
-            formatted_prompt: The fully formatted prompt string with all placeholders replaced.
             language: Target language for response
+            **kwargs: Placeholder values for prompt template
 
         Returns:
             Generated text
 
         Raises:
-            ValueError: If LLM client not available
+            ValueError: If LLM client not available or prompt not found
         """
         if not self.llm_client.is_available():
             raise ValueError(f"{self.__class__.__name__} requires LLM client. Check API key configuration.")
         
-        logger.info(f"Prompt brute : {formatted_prompt}")
+        # Load prompt dynamically based on language
+        self.prompt_template = await self._load_prompt_from_db(language)
         
-        # Translate prompt if needed and not English
-        if self.translate_prompt and language != "en":
-            from app.agents.translation_agent import get_translation_agent
-            translation_agent = get_translation_agent()
-            translated_prompt = await translation_agent.translate_prompt(formatted_prompt, language)
-            logger.info(f"Prompt traduit en {language} : {translated_prompt} ")
-            formatted_prompt = translated_prompt
-
-
+        formatted_prompt = self._format_prompt(self.prompt_template, **kwargs)
+        logger.info(f"Prompt brut ({language}) : {formatted_prompt}")
+        
         # Prepare messages
         messages = [
-            {"role": "system", "content": "You are a helpful AI assistant specialized in video content creation."},
+            {"role": "system", "content": "YYou are an AI assistant specialized in video content creation. Your mission is to generate catchy titles, compelling descriptions, structured sections, and complete content, ensuring that each element is relevant and tailored to the target theme and language."},
             {"role": "user", "content": formatted_prompt}
         ]
 

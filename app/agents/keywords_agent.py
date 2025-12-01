@@ -18,9 +18,9 @@ class KeywordsAgent(BaseAgent):
             temperature: Lower temperature for more focused keywords
         """
         super().__init__(
-            prompt_file="keywords_prompt.txt",
+            prompt_name="keywords_prompt", # Changed from prompt_file to prompt_name
             temperature=temperature,
-            translate_prompt=True  # Keywords prompt should be translated for better context
+            translate_prompt=False # No longer translating, as prompts are language-specific
         )
 
     def _get_max_tokens(self) -> Optional[int]:
@@ -62,8 +62,10 @@ class KeywordsAgent(BaseAgent):
         logger.info("Generation des keywords")
 
         keywords = await super().generate(
-            formatted_prompt=formatted_prompt,
-            language=language
+            language=language,
+            script_text=script_text,
+            description=description,
+            use_case=use_case
         )
 
         # Clean up keywords

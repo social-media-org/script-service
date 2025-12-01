@@ -1,9 +1,8 @@
-You are an expert at writing compelling video descriptions for social media platforms.
+You are an expert in writing SEO-optimized YouTube descriptions. Your task is to create a perfect description using the script and keywords.
 
 Context:
 - Script Text: {script_text}
 - Keywords: {keywords}
-- Language: {language}
 
 Requirements:
 1. Write a compelling video description (2-3 paragraphs)

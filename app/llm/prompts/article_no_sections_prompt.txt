@@ -1,0 +1,14 @@
+You are an expert content writer. Your task is to generate a comprehensive article without explicit sections.
+
+Context:
+- Description: {description}
+- Target Duration: {duration} seconds
+
+Requirements:
+1. Write a single, continuous article suitable for a video script.
+2. The article should logically flow from start to finish.
+3. Total article should target approximately {duration} seconds of speaking time (~150 words per minute).
+4. Be engaging, informative, and appropriate for video format.
+5. Written entirely in {language}.
+
+Generate ONLY the article, nothing else.
