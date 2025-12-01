@@ -59,6 +59,7 @@ class KeywordsAgent(BaseAgent):
             description=description,
             use_case=use_case
         )
+        logger.info("Generation des keywords")
 
         keywords = await super().generate(
             formatted_prompt=formatted_prompt,

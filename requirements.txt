@@ -25,3 +25,4 @@ httpx==0.28.1
 
 # Utilities
 python-slugify==8.0.4
+requests

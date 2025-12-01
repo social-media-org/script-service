@@ -97,7 +97,8 @@ class ScriptOrchestrator:
         keywords = await self.keywords_agent.generate_keywords(
             script_text=script_text,
             description=request.description,
-            use_case=request.use_case
+            use_case=request.use_case,
+            language=request.language
         )
 
         # Step 5: Generate video description (always)
