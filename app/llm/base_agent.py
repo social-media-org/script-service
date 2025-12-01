@@ -56,7 +56,7 @@ class BaseAgent(ABC):
         with open(prompt_path, 'r', encoding='utf-8') as f:
             return f.read()
 
-    def _format_prompt(template: str, **kwargs) -> str:
+    def _format_prompt(self, template: str, **kwargs) -> str:
     # Remplacer None par ""
         cleaned = {k: ("" if v is None else v) for k, v in kwargs.items()}
 
