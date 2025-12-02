@@ -4,8 +4,8 @@ import logging
 from typing import Optional
 
 from app.models.contextual_description import ContextualDescriptionRequest, ContextualDescriptionResponse
-from app.agents.contextual_description_agent import ContextualDescriptionAgent
 from app.services.transcription_service import get_transcription_service
+from app.services.prompt_service import PromptService, get_prompt_service
 
 logger = logging.getLogger(__name__)
 
@@ -15,8 +15,8 @@ class ContextualDescriptionService:
 
     def __init__(self):
         """Initialize service with all agents."""
-        self.contextual_description_agent = ContextualDescriptionAgent()
         self.transcription_service = get_transcription_service()
+        self.prompt_service = get_prompt_service()
         logger.info("ContextualDescriptionService initialized")
 
     async def generate_contextual_description(
@@ -46,14 +46,24 @@ class ContextualDescriptionService:
             else:
                 logger.warning("No transcription content obtained from inspiration videos")
 
-        # Step 2: Generate contextual description using the agent
-        contextual_description = await self.contextual_description_agent.generate_contextual_description(
-            title=request.title,
-            language=request.language,
-            type_video=request.type_video,
+        # Step 2: Retrieve and format the contextual description prompt
+        prompt_template = await self.prompt_service.get_prompt(
+            request.type_video,
+            request.language
+        )
+        
+        if not prompt_template:
+            logger.error(f"No prompt found for video type: {request.type_video} and language: {request.language}")
+            raise ValueError("Prompt template not found")
+
+        formatted_title = f"title: {request.title}" if request.title else ""
+        formatted_description = f"description: {request.description}" if request.description else ""
+
+        contextual_description = prompt_template.format(
+            script_inspiration=inspiration_content,
             duration=request.duration,
-            inspiration_content=inspiration_content,
-            description=request.description
+            title=formatted_title,
+            description=formatted_description
         )
 
         # Build response
