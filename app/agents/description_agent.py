@@ -48,16 +48,10 @@ class DescriptionAgent(BaseAgent):
             Generated description
         """
         logger.info(f"Generating description for script ({len(script_text)} chars)")
-        
-        # Truncate script if too long (keep first 1000 chars)
-        if len(script_text) > 1000:
-            script_preview = script_text[:1000] + "..."
-        else:
-            script_preview = script_text
 
         description = await super().generate(
             language=language,
-            script_text=script_preview,
+            script_text=script_text,
             keywords=keywords or "video content"
         )
 

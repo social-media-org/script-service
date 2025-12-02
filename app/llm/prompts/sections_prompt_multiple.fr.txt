@@ -2,8 +2,6 @@ Vous êtes un rédacteur de scripts vidéo expert. Votre tâche consiste à gén
 
 Contexte :
 - Description : {description}
-- Cas d'utilisation : {use_case}
-- Style : {style}
 - Durée cible : {duration} secondes
 - Nombre de sections : {nb_section}
 

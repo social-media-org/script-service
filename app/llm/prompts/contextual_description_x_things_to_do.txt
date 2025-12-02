@@ -1,0 +1,4 @@
+Generate a concise contextual description for a video with the following details:
+{context}
+
+The description should clearly indicate that the video will present a list of "X things to do". Emphasize the practical, actionable nature of the content. The narration style should be direct and persuasive, encouraging viewers to implement the listed items. The structure of the script should be explicitly mentioned: an introduction followed by a numbered list (e.g., "Firstly...", "Secondly...", etc.).

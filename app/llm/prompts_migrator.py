@@ -51,6 +51,27 @@ PROMPT_FILES = {
         "es_path": "article_no_sections_prompt.es.txt",
         "type": "article_no_sections",
         "name": "article_no_sections_prompt"
+    },
+    "contextual_description_life_lesson": {
+        "path": "contextual_description_life_lesson.txt",
+        "fr_path": "contextual_description_life_lesson.fr.txt",
+        "es_path": None, # Add if Spanish version exists
+        "type": "contextual_description",
+        "name": "contextual_description_life_lesson"
+    },
+    "contextual_description_stoicism": {
+        "path": "contextual_description_stoicism.txt",
+        "fr_path": "contextual_description_stoicism.fr.txt",
+        "es_path": None, # Add if Spanish version exists
+        "type": "contextual_description",
+        "name": "contextual_description_stoicism"
+    },
+    "contextual_description_x_things_to_do": {
+        "path": "contextual_description_x_things_to_do.txt",
+        "fr_path": "contextual_description_x_things_to_do.fr.txt",
+        "es_path": None, # Add if Spanish version exists
+        "type": "contextual_description",
+        "name": "contextual_description_x_things_to_do"
     }
 }
 

@@ -1,0 +1,4 @@
+Generate a concise contextual description for a video with the following details:
+{context}
+
+The description should focus on the philosophical exploration of Stoicism, its core tenets, and how it can be applied to modern challenges. Emphasize resilience, wisdom, and tranquility. The description should attract viewers interested in personal development and ancient philosophy.

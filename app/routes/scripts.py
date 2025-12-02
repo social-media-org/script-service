@@ -5,7 +5,12 @@ import traceback
 from fastapi import APIRouter, HTTPException, status
 
 from app.models.script import ScriptGenerationRequest, ScriptGenerationResponse
+from app.models.contextual_description import (
+    ContextualDescriptionRequest,
+    ContextualDescriptionResponse,
+)
 from app.services.script_orchestrator import get_orchestrator
+from app.services.contextual_description_service import get_contextual_description_service
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +62,48 @@ async def generate_script(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Script generation failed: {str(e)}"
+        )
+
+
+@router.post(
+    "/description-contextuel/generate",
+    response_model=ContextualDescriptionResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Generate contextual video description",
+    description="""
+    Generate a contextual video description based on competitor videos and video type.
+    """
+)
+async def generate_contextual_description(
+    request: ContextualDescriptionRequest
+) -> ContextualDescriptionResponse:
+    """Generate contextual video description for a project.
+
+    Args:
+        request: Contextual description generation request
+
+    Returns:
+        Generated contextual description
+
+    Raises:
+        HTTPException: If generation fails
+    """
+    logger.info(f"Received contextual description generation request for {request.title}")
+
+    try:
+        # Get service and generate contextual description
+        contextual_description_service = get_contextual_description_service()
+        response = await contextual_description_service.generate_contextual_description(request)
+
+        logger.info(f"Contextual description generation successful")
+        return response
+
+    except Exception as e:
+        traceback.print_exc()
+        logger.error(f"Contextual description generation failed: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Contextual description generation failed: {str(e)}"
         )
 
 

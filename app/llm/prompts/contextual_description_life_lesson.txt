@@ -1,0 +1,4 @@
+Generate a concise contextual description for a video with the following details:
+{context}
+
+The description should set the stage for a story-driven video that delivers a significant life lesson. It should be engaging and hint at the emotional or practical takeaway without revealing the entire plot. Focus on compelling the viewer to watch the video to discover the wisdom shared.
