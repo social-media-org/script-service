@@ -16,8 +16,8 @@ async def trigger_prompt_migration():
     """
     logger.info("Admin endpoint /migrate_prompts called.")
     try:
-        await migrate_prompts_to_mongodb()
-        return {"message": "Prompt migration initiated successfully."}
+        update = await migrate_prompts_to_mongodb()
+        return update
     except Exception as e:
         logger.error(f"Prompt migration failed: {e}")
         raise HTTPException(

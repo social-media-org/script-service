@@ -77,12 +77,16 @@ PROMPT_FILES = {
 
 DEFAULT_LANGUAGES = ["en", "fr", "es"]
 
-async def migrate_prompts_to_mongodb():
+async def migrate_prompts_to_mongodb() -> list[str]:
     """
     Migrates prompt templates from files to MongoDB.
     This function will update existing prompts and insert new ones.
+
+    Returns:
+        A list of prompt names that were updated or inserted.
     """
     client = None
+    updated_or_inserted_prompts = []
     try:
         client = AsyncIOMotorClient(settings.mongodb_url)
         database = client[settings.DB_NAME]
@@ -93,10 +97,13 @@ async def migrate_prompts_to_mongodb():
         for prompt_key, prompt_info in PROMPT_FILES.items():
             for lang in DEFAULT_LANGUAGES:
                 file_to_read = prompt_info["path"]
-                if lang == "fr" and "fr_path" in prompt_info:
+                if lang == "fr" and "fr_path" in prompt_info and prompt_info["fr_path"]:
                     file_to_read = prompt_info["fr_path"]
-                elif lang == "es" and "es_path" in prompt_info:
+                elif lang == "es" and "es_path" in prompt_info and prompt_info["es_path"]:
                     file_to_read = prompt_info["es_path"]
+                elif (lang == "fr" and not prompt_info.get("fr_path")) or \
+                     (lang == "es" and not prompt_info.get("es_path")):
+                    continue # Skip if language path is explicitly None or not provided
 
                 prompt_file_path = Path(__file__).parent / "prompts" / file_to_read
                 
@@ -123,18 +130,28 @@ async def migrate_prompts_to_mongodb():
                 
                 if result.upserted_id:
                     logger.info(f"Inserted new prompt '{full_prompt_name}' for language '{lang}' into MongoDB.")
+                    updated_or_inserted_prompts.append(full_prompt_name)
                 elif result.modified_count > 0:
                     logger.info(f"Updated existing prompt '{full_prompt_name}' for language '{lang}' in MongoDB.")
+                    updated_or_inserted_prompts.append(full_prompt_name)
                 else:
                     logger.info(f"Prompt '{full_prompt_name}' for language '{lang}' already up to date.")
 
         logger.info("Prompt migration/update completed.")
+        return updated_or_inserted_prompts
 
     except Exception as e:
         logger.error(f"Error during prompt migration: {e}")
+        return []
     finally:
         if client:
             client.close()
 
 if __name__ == "__main__":
-    asyncio.run(migrate_prompts_to_mongodb())
+    updated_prompts = asyncio.run(migrate_prompts_to_mongodb())
+    if updated_prompts:
+        print("\n--- Prompts Updated/Inserted ---")
+        for prompt_name in updated_prompts:
+            print(f"- {prompt_name}")
+    else:
+        print("\nNo prompts were updated or inserted.")
