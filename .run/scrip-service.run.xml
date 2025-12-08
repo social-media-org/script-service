@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="scrip-service" type="Python.FastAPI">
-    <option name="additionalOptions" value="--reload --port 8002" />
+    <option name="additionalOptions" value="--reload --port 8001" />
     <option name="file" value="D:\workspace\social-media\script-service\app\main.py" />
     <module name="script-service" />
     <option name="ENV_FILES" value="" />
