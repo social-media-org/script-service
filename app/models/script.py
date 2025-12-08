@@ -13,27 +13,18 @@ class ScriptGenerationRequest(BaseModel):
         default=None,
         description="List of YouTube/Facebook video URLs for inspiration"
     )
-    use_case: Literal[
-        "storytelling",
-        "youtube_short",
-        "explanation",
-        "commercial",
-        "inspirational",
-        "educational",
-        "tutorial"
-    ] = Field(..., description="Video use case type")
+    
+    use_case: Optional[str] = Field(
+        None,        description="Cas d'usage"
+    )
     language: Literal["en", "fr", "es", "de", "it", "pt"] = Field(
         ...,
         description="Target language for script"
     )
-    style: Literal[
-        "educational",
-        "inspirational",
-        "comedic",
-        "dramatic",
-        "casual",
-        "professional"
-    ] = Field(..., description="Video style/tone")
+    style: Optional[str] = Field(
+        None,
+        description="Style du script"
+    )
     keywords: Optional[str] = Field(
         default=None,
         description="SEO keywords (comma-separated)"
