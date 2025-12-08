@@ -2,6 +2,8 @@
 
 import logging
 from typing import Optional
+import datetime
+import humanize
 
 from app.models.contextual_description import ContextualDescriptionRequest, ContextualDescriptionResponse
 from app.services.transcription_service import get_transcription_service
@@ -47,7 +49,7 @@ class ContextualDescriptionService:
                 logger.warning("No transcription content obtained from inspiration videos")
 
         # Step 2: Retrieve and format the contextual description prompt
-        prompt_template = await self.prompt_service.get_prompt(
+        prompt_template = await self.prompt_service.get_prompt_content(
             request.type_video,
             request.language
         )
@@ -59,9 +61,16 @@ class ContextualDescriptionService:
         formatted_title = f"title: {request.title}" if request.title else ""
         formatted_description = f"description: {request.description}" if request.description else ""
 
+        # Format duration into human-readable format using humanize
+        if request.duration is not None:
+            duration_delta = datetime.timedelta(seconds=request.duration)
+            formatted_duration = humanize.naturaldelta(duration_delta)
+        else:
+            formatted_duration = ""
+
         contextual_description = prompt_template.format(
             script_inspiration=inspiration_content,
-            duration=request.duration,
+            duration=formatted_duration,
             title=formatted_title,
             description=formatted_description
         )
