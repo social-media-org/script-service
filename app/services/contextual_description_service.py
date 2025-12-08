@@ -1,7 +1,7 @@
 """Service for coordinating contextual description generation."""
 
 import logging
-from typing import Optional
+from typing import Optional, Any 
 import datetime
 import humanize
 
@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 class ContextualDescriptionService:
     """Orchestrates the contextual description generation pipeline."""
 
-    def __init__(self):
+    def __init__(self, transcription_service: Any, prompt_service: PromptService):
         """Initialize service with all agents."""
-        self.transcription_service = get_transcription_service()
-        self.prompt_service = get_prompt_service()
+        self.transcription_service = transcription_service
+        self.prompt_service = prompt_service
         logger.info("ContextualDescriptionService initialized")
 
     async def generate_contextual_description(
@@ -85,17 +85,8 @@ class ContextualDescriptionService:
         return response
 
 
-# Global singleton
-_contextual_description_service: Optional[ContextualDescriptionService] = None
-
-
-def get_contextual_description_service() -> ContextualDescriptionService:
-    """Get or create ContextualDescriptionService singleton.
-
-    Returns:
-        ContextualDescriptionService instance
-    """
-    global _contextual_description_service
-    if _contextual_description_service is None:
-        _contextual_description_service = ContextualDescriptionService()
-    return _contextual_description_service
+async def create_contextual_description_service() -> ContextualDescriptionService:
+    """Factory function to create a ContextualDescriptionService instance with awaited dependencies."""
+    transcription_service = get_transcription_service()
+    prompt_service = await get_prompt_service()
+    return ContextualDescriptionService(transcription_service, prompt_service)

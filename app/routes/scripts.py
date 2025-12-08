@@ -10,7 +10,7 @@ from app.models.contextual_description import (
     ContextualDescriptionResponse,
 )
 from app.services.script_orchestrator import get_orchestrator
-from app.services.contextual_description_service import get_contextual_description_service
+from app.services.contextual_description_service import create_contextual_description_service # Changed import
 
 logger = logging.getLogger(__name__)
 
@@ -92,7 +92,7 @@ async def generate_contextual_description(
 
     try:
         # Get service and generate contextual description
-        contextual_description_service = get_contextual_description_service()
+        contextual_description_service = await create_contextual_description_service() # Changed to use factory
         response = await contextual_description_service.generate_contextual_description(request)
 
         logger.info(f"Contextual description generation successful")
