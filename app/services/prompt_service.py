@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Optional, List
 
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
@@ -26,7 +26,7 @@ class PromptService:
         Returns:
             The prompt content as a string, or None if not found.
         """
-        full_prompt_name = f"{prompt_name}_{language}"
+        full_prompt_name = f"{prompt_name}_{"" if language == 'en' else language}"
         logger.debug(f"Attempting to retrieve prompt: {full_prompt_name}")
 
         prompt_doc = await self.collection.find_one(
@@ -40,6 +40,29 @@ class PromptService:
         else:
             logger.warning(f"Prompt '{full_prompt_name}' not found in database.")
             return None
+
+    async def get_prompts(self, skip: int = 0, limit: int = 100) -> List[Prompt]:
+        """
+        Retrieves multiple prompts from MongoDB with pagination.
+
+        Args:
+            skip: Number of documents to skip (for pagination).
+            limit: Maximum number of documents to return.
+
+        Returns:
+            A list of Prompt objects.
+        """
+        logger.debug(f"Retrieving prompts with skip={skip}, limit={limit}")
+        
+        cursor = self.collection.find().skip(skip).limit(limit)
+        prompts = []
+        
+        async for document in cursor:
+            prompt = Prompt(**document)
+            prompts.append(prompt)
+        
+        logger.info(f"Retrieved {len(prompts)} prompts")
+        return prompts
 
 # Singleton instance
 _prompt_service: Optional[PromptService] = None

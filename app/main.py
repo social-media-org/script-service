@@ -13,7 +13,7 @@ from app.core.database import db # Import the MongoDB instance
 from app.core.exceptions import setup_exception_handlers
 from app.core.logging import get_logger, setup_logging
 from app.llm.prompts_migrator import migrate_prompts_to_mongodb # Import the migration function
-from app.routes import scripts, admin # Import the new admin router
+from app.routes import scripts, admin, prompts # Import the new admin router
 
 # Setup logging
 setup_logging()
@@ -90,6 +90,7 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(scripts.router, prefix=settings.api_v1_prefix)
     app.include_router(admin.router, prefix=f"{settings.api_v1_prefix}/admin", tags=["Admin"])
+    app.include_router(prompts.router, prefix=settings.api_v1_prefix, tags=["Prompts"])
 
     return app
 

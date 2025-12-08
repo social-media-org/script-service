@@ -50,7 +50,7 @@ class ContextualDescriptionService:
 
         # Step 2: Retrieve and format the contextual description prompt
         prompt_template = await self.prompt_service.get_prompt_content(
-            request.type_video,
+            "contextual_description_" + request.type_video.lower(),
             request.language
         )
         
@@ -62,7 +62,7 @@ class ContextualDescriptionService:
         formatted_description = f"description: {request.description}" if request.description else ""
 
         # Format duration into human-readable format using humanize
-        if request.duration is not None:
+        if request.duration is not None and request.duration > 0 :
             duration_delta = datetime.timedelta(seconds=request.duration)
             formatted_duration = humanize.naturaldelta(duration_delta)
         else:
@@ -77,7 +77,7 @@ class ContextualDescriptionService:
 
         # Build response
         response = ContextualDescriptionResponse(
-            description=contextual_description,
+            contextual_description=contextual_description,
             status="contextual_description_generated"
         )
 

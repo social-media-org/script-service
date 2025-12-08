@@ -49,7 +49,7 @@ class ContextualDescriptionRequest(BaseModel):
 class ContextualDescriptionResponse(BaseModel):
     """Response model for contextual description generation."""
 
-    description: str = Field(..., description="Generated contextual description")
+    contextual_description: str = Field(..., description="Generated contextual description")
     status: str = Field(
         default="contextual_description_generated",
         description="Generation status"
@@ -58,7 +58,7 @@ class ContextualDescriptionResponse(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "description": "This video will explore the importance of persistence through a short, impactful story, suitable for a 4-minute YouTube video. It will highlight a key life lesson relevant to modern challenges.",
+                "contextual_description": "This video will explore the importance of persistence through a short, impactful story, suitable for a 4-minute YouTube video. It will highlight a key life lesson relevant to modern challenges.",
                 "status": "contextual_description_generated"
             }
         }
