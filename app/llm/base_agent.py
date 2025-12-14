@@ -3,9 +3,12 @@
 from collections import defaultdict
 import logging
 from abc import ABC, abstractmethod
+from datetime import timedelta
 from pathlib import Path
 from string import Template
 from typing import Optional
+
+import humanize
 
 from app.core.llm_client import get_llm_client
 from app.services.prompt_service import get_prompt_service
@@ -92,6 +95,21 @@ class BaseAgent(ABC):
         
         # Load prompt dynamically based on language
         self.prompt_template = await self._load_prompt_from_db(language)
+        
+        # Format duration if present
+        if 'duration' in kwargs and kwargs['duration'] is not None:
+            try:
+                # Convert to float then int (handle float values)
+                seconds = float(kwargs['duration'])
+                # Round to nearest integer
+                seconds_int = int(round(seconds))
+                # Format using humanize
+                formatted_duration = humanize.precisedelta(timedelta(seconds=seconds_int))
+                kwargs['duration'] = "Important: the duration should be approximately " + formatted_duration
+                logger.info(f"Formatted duration: {seconds} seconds -> {formatted_duration}")
+            except (ValueError, TypeError):
+                # If conversion fails, keep original value
+                logger.warning(f"Could not convert duration '{kwargs['duration']}' to numeric seconds")
         
         formatted_prompt = self._format_prompt(self.prompt_template, **kwargs)
         logger.info(f"Prompt brut ({language}) : {formatted_prompt}")
