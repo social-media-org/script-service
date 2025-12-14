@@ -12,6 +12,7 @@ Le ton doit être motivant, fluide, direct et engageant.
 
 Inspire-toi du script ci-dessous uniquement pour le rythme, la structure et la dynamique. Ne retourne jamais l’histoire sans modification.
 {script_inspiration}
+{duration}
 
 Structure attendue :
 

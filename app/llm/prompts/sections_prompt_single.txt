@@ -3,6 +3,7 @@ Your task is to produce a smooth, engaging script that perfectly aligns with the
 
 Context
 Description: {description}
+{duration}
 
 Script Objective
 Generate a standalone script that matches exactly the style, tone, and intent implied in the description.

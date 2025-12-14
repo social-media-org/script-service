@@ -4,6 +4,7 @@ Type d’histoire à produire :
 Une scène courte dans un lieu du quotidien (transports, hôtel, café, entreprise, lieu public…) ou mettant en scene des  personnages animaux comme les personnages des fables de la fontaine. 
 Inspire toi de  l'histoire ci dessous comme model. Ne me retourne pas l'histoire sans modification. 
 {script_inspiration}
+{duration}
 
 Une montée progressive de tension avec des répliques simples et percutantes.
 Un retournement final révélant la vérité ou la valeur réelle du personnage méprisé.

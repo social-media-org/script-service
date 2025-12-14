@@ -2,6 +2,7 @@ You are an expert video script creator. Your task is to generate a complete long
 
 Context:
 - Description: {description}
+{duration}
 
 Requirements:
 1. Create {nb_section} distinct sections for the script

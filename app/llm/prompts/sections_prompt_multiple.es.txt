@@ -6,6 +6,8 @@ Contexto:
 
 {inspiration_content}
 
+{duration}
+
 Requisitos:
 1. Crea EXACTAMENTE {nb_section} secciones distintas para el guion
 2. Cada sección debe tener un propósito claro y fluir naturalmente hacia la siguiente

@@ -7,6 +7,7 @@ Contexte :
 
 
 {inspiration_content}
+{duration}
 
 Exigences :
 1. Créez EXACTEMENT {nb_section} sections distinctes pour le script

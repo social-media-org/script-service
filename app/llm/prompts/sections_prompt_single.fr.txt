@@ -3,6 +3,7 @@ Votre tâche est de produire un script fluide, engageant et parfaitement aligné
 
 Contexte
 Description : {description}
+{duration}
 
 Objectif du script
 Générez un script autonome correspondant exactement au style, au ton et à l’intention implicites contenus dans la description.

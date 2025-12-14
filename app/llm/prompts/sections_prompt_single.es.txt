@@ -3,6 +3,7 @@ Tu tarea es producir un guion fluido, atractivo y perfectamente alineado con el 
 
 Contexto
 Descripción: {description}
+{duration}
 
 Objetivo del guion
 Genera un guion autónomo que coincida exactamente con el estilo, el tono y la intención implícitos en la descripción.

@@ -34,6 +34,7 @@ La durée du script doit être d’environ {duration}, sachant qu’un narrateur
 
 {title}
 {description}
+{duration}
 
 Aucune explication, aucun commentaire, aucune analyse.
 Retourner UNIQUEMENT le script final, rien d’autre.
