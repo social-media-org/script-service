@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     environment: str = "development"
 
     # API
-    api_v1_prefix: str = "/api/v1"
+    api_v1_prefix: str = ""
     allowed_hosts: list[str] = ["*"]
     app_port: int = 8000
 
