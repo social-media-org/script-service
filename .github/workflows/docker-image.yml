@@ -44,7 +44,7 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ghcr.io/social-media/script-service:${{ github.event.inputs.tag || 'latest' }}
-            ghcr.io/social-media/script-service:${{ github.sha }}
+            ghcr.io/social-media-org/script-service:${{ github.event.inputs.tag || 'latest' }}
+            ghcr.io/social-media-org/script-service:${{ github.sha }}
 
 

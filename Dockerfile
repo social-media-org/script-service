@@ -1,12 +1,13 @@
 # Multi-stage Dockerfile for FastAPI application
 
-LABEL org.opencontainers.image.source="https://github.com/social-media/script-service"
-LABEL maintainer="social-media"
-ENV PYTHONUNBUFFERED=1
 # ============================================
 # Stage 1: Builder
 # ============================================
 FROM python:3.13-slim AS builder
+
+LABEL org.opencontainers.image.source="https://github.com/social-media/script-service"
+LABEL maintainer="social-media"
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /app
