@@ -115,11 +115,11 @@ make clean        # Supprime les caches Python
 ## 📚 Endpoints disponibles
 
 - `GET /health` - Health check
-- `POST /api/v1/examples` - Créer un exemple
-- `GET /api/v1/examples` - Lister les exemples (pagination)
-- `GET /api/v1/examples/{id}` - Obtenir un exemple
-- `PUT /api/v1/examples/{id}` - Mettre à jour un exemple
-- `DELETE /api/v1/examples/{id}` - Supprimer un exemple
+- `POST /examples` - Créer un exemple
+- `GET /examples` - Lister les exemples (pagination)
+- `GET /examples/{id}` - Obtenir un exemple
+- `PUT /examples/{id}` - Mettre à jour un exemple
+- `DELETE /examples/{id}` - Supprimer un exemple
 
 ## 🔄 Ajouter une nouvelle entité
 
@@ -132,7 +132,7 @@ make clean        # Supprime les caches Python
 3. **Service** (`app/services/your_entity_service.py`)
    - Ajouter la logique métier
 
-4. **Routes** (`app/api/v1/routes/your_entity.py`)
+4. **Routes** (`app/routes/your_entity.py`)
    - Créer les endpoints HTTP
 
 5. **Dependencies** (`app/api/dependencies/__init__.py`)

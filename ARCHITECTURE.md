@@ -191,7 +191,7 @@ async def generate(self, language: str = "en", **kwargs):
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│            POST /api/v1/scripts/{project_id}                │
+│            POST /scripts/{project_id}                │
 │            ScriptGenerationRequest                          │
 └────────────────────────┬────────────────────────────────────┘
                          │

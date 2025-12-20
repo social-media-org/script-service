@@ -18,8 +18,8 @@ Le microservice **script-service** a été créé avec succès ! 🎉
 - `LLMClient` - Client DeepSeek (compatible OpenAI)
 
 ✅ **API REST** :
-- Route `/api/v1/scripts/{project_id}` - Génération complète
-- Route `/api/v1/scripts/health` - Health check
+- Route `/scripts/{project_id}` - Génération complète
+- Route `/scripts/health` - Health check
 - Documentation Swagger automatique
 
 ### 📁 Fichiers Créés (28 fichiers)
@@ -113,7 +113,7 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 curl http://localhost:8000/health
 
 # Générer un script
-curl -X POST "http://localhost:8000/api/v1/scripts/test-1" \
+curl -X POST "http://localhost:8000/scripts/test-1" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Quick Python Tip",

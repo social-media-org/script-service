@@ -81,7 +81,7 @@ fastapi-clean-arch/
 ```
 ┌─────────────┐
 │  HTTP GET   │
-│ /api/v1/... │
+│ /... │
 └──────┬──────┘
        │
        ↓
@@ -167,6 +167,6 @@ fastapi-clean-arch/
 1. Créer le model dans `app/models/your_model.py`
 2. Créer le repository dans `app/repositories/your_repository.py`
 3. Créer le service dans `app/services/your_service.py`
-4. Créer les routes dans `app/api/v1/routes/your_routes.py`
+4. Créer les routes dans `app/routes/your_routes.py`
 5. Ajouter les dependencies dans `app/api/dependencies/__init__.py`
 6. Inclure le router dans `app/main.py`

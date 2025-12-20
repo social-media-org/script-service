@@ -119,11 +119,11 @@ DB_NAME=fastapi_db
 
 ```
 GET  /health                  # Health check
-POST /api/v1/examples         # Créer
-GET  /api/v1/examples         # Lister (pagination)
-GET  /api/v1/examples/{id}    # Obtenir
-PUT  /api/v1/examples/{id}    # Mettre à jour
-DELETE /api/v1/examples/{id}  # Supprimer
+POST /examples         # Créer
+GET  /examples         # Lister (pagination)
+GET  /examples/{id}    # Obtenir
+PUT  /examples/{id}    # Mettre à jour
+DELETE /examples/{id}  # Supprimer
 ```
 
 ## 🧪 Tests

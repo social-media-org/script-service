@@ -182,11 +182,11 @@ make run-docker
 
 ### Endpoints disponibles
 - `GET /health` - Health check
-- `POST /api/v1/examples` - Créer
-- `GET /api/v1/examples` - Lister
-- `GET /api/v1/examples/{id}` - Obtenir
-- `PUT /api/v1/examples/{id}` - Mettre à jour
-- `DELETE /api/v1/examples/{id}` - Supprimer
+- `POST /examples` - Créer
+- `GET /examples` - Lister
+- `GET /examples/{id}` - Obtenir
+- `PUT /examples/{id}` - Mettre à jour
+- `DELETE /examples/{id}` - Supprimer
 
 ---
 
@@ -316,7 +316,7 @@ $ python -c "from app.core.config import settings; print(settings.app_port)"
 1. Ajouter vos models dans `app/models/`
 2. Créer vos repositories dans `app/repositories/`
 3. Implémenter vos services dans `app/services/`
-4. Créer vos routes dans `app/api/v1/routes/`
+4. Créer vos routes dans `app/routes/`
 
 ---
 

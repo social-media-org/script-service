@@ -180,7 +180,7 @@ GET /health
 ### 2. Script Service Health
 
 ```http
-GET /api/v1/scripts/health
+GET /scripts/health
 ```
 
 **Response:**
@@ -202,7 +202,7 @@ GET /api/v1/scripts/health
 ### 3. Générer un script complet
 
 ```http
-POST /api/v1/scripts/{project_id}
+POST /scripts/{project_id}
 Content-Type: application/json
 
 {
@@ -239,7 +239,7 @@ Content-Type: application/json
 ### 4. Régénérer uniquement les métadonnées
 
 ```http
-POST /api/v1/scripts/{project_id}
+POST /scripts/{project_id}
 Content-Type: application/json
 
 {
@@ -389,7 +389,7 @@ Content-Type: application/json
 ### Exemple 1: Vidéo courte (30s)
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/scripts/proj123" \
+curl -X POST "http://localhost:8000/scripts/proj123" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Quick Python Tip",
@@ -403,7 +403,7 @@ curl -X POST "http://localhost:8000/api/v1/scripts/proj123" \
 ### Exemple 2: Tutoriel long avec inspirations
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/scripts/proj456" \
+curl -X POST "http://localhost:8000/scripts/proj456" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Complete Django Course",
@@ -422,7 +422,7 @@ curl -X POST "http://localhost:8000/api/v1/scripts/proj456" \
 ### Exemple 3: Régénération métadonnées uniquement
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/scripts/proj789" \
+curl -X POST "http://localhost:8000/scripts/proj789" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "My Video",

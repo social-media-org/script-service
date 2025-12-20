@@ -49,7 +49,7 @@ curl http://localhost:8000/health
 ### Générer un script simple
 
 ```bash
-curl -X POST "http://localhost:8000/api/v1/scripts/test-1" \
+curl -X POST "http://localhost:8000/scripts/test-1" \
   -H "Content-Type: application/json" \
   -d '{
     "title": "Quick Python Tip",

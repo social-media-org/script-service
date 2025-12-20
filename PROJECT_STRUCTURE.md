@@ -64,7 +64,7 @@
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         REQUÊTE CLIENT                          │
-│  POST /api/v1/scripts/{project_id}                             │
+│  POST /scripts/{project_id}                             │
 │  Body: ScriptGenerationRequest                                 │
 └────────────────────────┬────────────────────────────────────────┘
                          │
@@ -153,7 +153,7 @@ DEBUG: bool                 # Mode debug
 ENVIRONMENT: str            # dev/prod
 
 # API
-API_V1_PREFIX: str          # Préfixe routes (/api/v1)
+API_V1_PREFIX: str          # Préfixe routes ()
 ALLOWED_HOSTS: list[str]    # CORS
 APP_PORT: int               # Port serveur
 
@@ -214,8 +214,8 @@ LOG_FORMAT: str             # text/json
 | Méthode | Route | Description |
 |---------|-------|-------------|
 | `GET` | `/health` | Health check global |
-| `GET` | `/api/v1/scripts/health` | Health check détaillé |
-| `POST` | `/api/v1/scripts/{project_id}` | Génération de script |
+| `GET` | `/scripts/health` | Health check détaillé |
+| `POST` | `/scripts/{project_id}` | Génération de script |
 | `GET` | `/docs` | Documentation Swagger |
 | `GET` | `/redoc` | Documentation ReDoc |
 

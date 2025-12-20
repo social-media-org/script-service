@@ -23,7 +23,7 @@
 
 ### API Layer
 - [x] `app/api/dependencies/__init__.py` - Dependency Injection
-- [x] `app/api/v1/routes/example.py` - Routes CRUD exemple
+- [x] `app/routes/example.py` - Routes CRUD exemple
 
 ### Service Layer
 - [x] `app/services/example_service.py` - Logique métier
@@ -109,7 +109,7 @@
 # Configuration
 ✅ Port: 8000
 ✅ MongoDB: fastapi_db
-✅ API Prefix: /api/v1
+✅ API Prefix: 
 ```
 
 ## 📊 Statistiques
