@@ -38,13 +38,14 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: |
             ghcr.io/social-media-org/script-service:${{ github.event.inputs.tag || 'latest' }}
             ghcr.io/social-media-org/script-service:${{ github.sha }}
-
-
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
