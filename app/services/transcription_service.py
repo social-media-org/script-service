@@ -139,8 +139,8 @@ class TranscriptionService:
         audio_path = await video_service.download_video_audio(url, project_title)
         
         if not audio_path:
-            logger.error(f"Failed to download audio from: {url}")
-            return None
+            logger.warning(f"⚠️ Failed to download audio from inspiration video: {url}. Skipping this video.")
+            return ""  # Return empty string instead of None for graceful fallback
 
         # Transcribe the audio
         return await self.transcribe_audio_file(audio_path, project_title, video_id)
