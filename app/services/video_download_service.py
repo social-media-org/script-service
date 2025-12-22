@@ -79,13 +79,12 @@ class VideoDownloadService:
         try:
             # Download with pytube
             def download():
-                yt = YouTube(url, use_oauth=False, allow_oauth_cache=True) # Add oauth params
+                yt = YouTube(url, use_oauth=False, allow_oauth_cache=True)
                 audio_stream = yt.streams.filter(only_audio=True).first()
                 if not audio_stream:
-                    raise pytubefix_exceptions.PytubeError("No audio stream found") # Use full path
+                    raise pytubefix_exceptions.PytubeFixError("No audio stream found")
 
                 # Download directly to the final location
-                # pytubefix's download method returns the full path of the downloaded file
                 downloaded_file_path = audio_stream.download(
                     output_path=audio_path.parent,
                     filename=audio_path.name
@@ -99,11 +98,15 @@ class VideoDownloadService:
                 return final_audio_path
             return None
 
-        except pytubefix_exceptions.PytubeError as e: # Catch specific pytube errors
-            logger.error(f"❌ YouTube audio download (PytubeError) error: {e}")
+        except pytubefix_exceptions.BotDetection as e:
+            logger.warning(f"⚠️ YouTube bot detection (consider using po_token): {e}")
+            logger.warning(f"   Video ID: {video_id}")
+            return None
+        except pytubefix_exceptions.PytubeFixError as e:
+            logger.error(f"❌ YouTube audio download (PytubeFixError): {e}")
             return None
         except Exception as e:
-            logger.error(f"❌ YouTube audio download (General Error) error: {e}")
+            logger.error(f"❌ YouTube audio download (General Error): {e}")
             return None
 
     async def download_facebook_video(
